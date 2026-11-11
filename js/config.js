@@ -8,6 +8,8 @@ export const CONFIG = {
     turns: 1.3,          // daugiausia apsisukimų (kai nuotraukų mažai, vija trumpesnė)
     spacing: 1.35,       // tankumas: tarpas tarp nuotraukų (1 = liečiasi, 2 = retai)
     visible: 40,         // daugiausia nuotraukų vijoje vienu metu
+    minTurns: 0.72,      // kai nuotraukų mažai: mažiausiai tiek rato vija vis tiek apjuosia
+    maxGap: 1.6,         // …ir kiek kartų tam galima padidinti tarpus tarp nuotraukų
     startAngle: -90,     // kur prasideda vija (laipsniais; -90 = virš centro, 0 = dešinėje)
     innerRadius: 0.39,   // vijos pradžios atstumas nuo centro (ekrano dalis)
     outerRadius: 0.545,  // vijos galo atstumas nuo centro (0.5 = ekrano kraštas)
