@@ -1,4 +1,5 @@
 import { CONFIG } from './config.js';
+import { extractPalette } from './ambient.js';
 
 const DEG = Math.PI / 180;
 const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
@@ -255,6 +256,7 @@ export class Spiral {
     const mid = make(40); mid.getContext('2d').drawImage(mini, 0, 0, mid.width, mid.height);
     const soft = make(12); soft.getContext('2d').drawImage(mid, 0, 0, soft.width, soft.height);
     item.mini = mini; item.soft = soft;
+    if (!item.palette) { item.palette = extractPalette(mini); if (item.palette) this.emit('palette', item); }
   }
 
   /* ── valdymas ── */

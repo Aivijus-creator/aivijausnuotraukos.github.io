@@ -24,10 +24,6 @@ export const CONFIG = {
     farBlur: 0.85,       // tolimiausių nuotraukų išliejimas (0–1)
     rotationFollow: 1,   // kiek nuotraukos pasisuka pagal spiralės liniją (0 = visos tiesios)
   },
-  sun: {
-    size: 0.345,         // saulės disko spindulys (trumpesnės ekrano kraštinės dalis)
-    follow: 5,           // kiek laipsnių saulės spinduliai pasisuka vienai nuotraukai
-  },
   motion: {
     inertia: 0.42,       // inercijos trukmė sekundėmis – kuo daugiau, tuo „sunkesnė“ spiralė
     wheelStep: 100,      // kiek ratuko pikselių atitinka vieną nuotrauką
