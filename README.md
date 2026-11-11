@@ -41,7 +41,6 @@ Publikuojant per GitHub (žr. žemiau) 2 žingsnis atliekamas automatiškai – 
 
 - **Tvarka spiralėje = tvarka faile.** Pirmoji sąraše yra ta, kuri atidarius būna centre.
 - Jei kuris nors laukas tuščias, jis tiesiog nerodomas.
-- Pavyzdinėse nuotraukose įrašas „Vieta bus čia“ reiškia, kad tikros vietos nežinau – pakeisk ją savo.
 - Norėdamas išimti nuotrauką, ištrink jos eilutę iš `photos.json` (ir failą iš `photos/`).
 - Po kiekvieno įrašo, išskyrus paskutinį, turi būti kablelis. Jei galerija nebeatsidaro, dažniausiai
   kaltas būtent praleistas ar perteklinis kablelis.
@@ -115,4 +114,4 @@ scripts/              nuotraukų paruošimas ir vietinis serveris
 fonts/                šriftai „Megrim“ ir „Fraunces“ (SIL Open Font License)
 ```
 
-Dabartinės nuotraukos yra laikinos pavyzdinės; jų autoriai surašyti `photos/CREDITS.md`.
+Kol `photos.json` neįrašyta nuotraukos vieta (`location`), po ja nerodoma nieko.

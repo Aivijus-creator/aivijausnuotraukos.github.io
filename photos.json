@@ -2,157 +2,100 @@
   "title": "aivijaus.raw",
   "photos": [
     {
-      "file": "01-veidrodinis-fjordas.jpg",
-      "title": "Veidrodinis fjordas",
-      "location": "Sløverfjorden, Lofotenai, Norvegija",
-      "year": "2015"
+      "file": "01-misko-kelias.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "02-kupolo-spirale.jpg",
-      "title": "Kupolo spiralė",
-      "location": "Vieta bus čia"
+      "file": "02-rukas-ir-sausuoliai.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "03-virsune-debesyse.jpg",
-      "title": "Viršūnė debesyse",
-      "location": "Vieta bus čia"
+      "file": "03-trobele-ir-kalnas.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "04-geltona-siena.jpg",
-      "title": "Geltona siena",
-      "location": "Vieta bus čia"
+      "file": "04-snieguotos-virsunes.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "05-kelias-po-lietaus.jpg",
-      "title": "Kelias po lietaus",
-      "location": "Viðareiði, Farerų salos"
+      "file": "05-kamienai.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "06-krioklys.jpg",
-      "title": "Krioklys",
-      "location": "Vakarų fjordai, Islandija"
+      "file": "06-rukas-slenyje.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "07-balkonu-ritmas.jpg",
-      "title": "Balkonų ritmas",
-      "location": "Vieta bus čia"
+      "file": "07-krioklys.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "08-sniegas-virs-fjordo.jpg",
-      "title": "Sniegas virš fjordo",
-      "location": "Funningsfjørður, Farerų salos"
+      "file": "08-upelis-tarpekly.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "09-rudens-miskas.jpg",
-      "title": "Rudens miškas",
-      "location": "Vieta bus čia"
+      "file": "09-kalnu-ketera.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "10-sala-atspindyje.jpg",
-      "title": "Sala atspindyje",
-      "location": "Vieta bus čia"
+      "file": "10-krioklys-uolose.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "11-baltas-kampas.jpg",
-      "title": "Baltas kampas",
-      "location": "Vieta bus čia"
+      "file": "11-avys-slaite.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "12-kelias-per-kalnus.jpg",
-      "title": "Kelias per kalnus",
-      "location": "Vakarų fjordai, Islandija"
+      "file": "12-antis.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "13-namas-prie-vandens.jpg",
-      "title": "Namas prie vandens",
-      "location": "Vieta bus čia"
+      "file": "13-menulis-ir-geles.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "14-dviratis-prie-sienos.jpg",
-      "title": "Dviratis prie sienos",
-      "location": "Bolonija, Italija"
+      "file": "14-debesys.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "15-banga-ir-smelis.jpg",
-      "title": "Banga ir smėlis",
-      "location": "Vieta bus čia"
+      "file": "15-kolonos.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     },
     {
-      "file": "16-laiptai.jpg",
-      "title": "Laiptai",
-      "location": "Vieta bus čia"
-    },
-    {
-      "file": "17-ziedai.jpg",
-      "title": "Žiedai",
-      "location": "Vieta bus čia"
-    },
-    {
-      "file": "18-fjordas-is-virsaus.jpg",
-      "title": "Fjordas iš viršaus",
-      "location": "Vieta bus čia"
-    },
-    {
-      "file": "19-dziovyklu-aleja.jpg",
-      "title": "Džiovyklų alėja",
-      "location": "Å, Lofotenai, Norvegija",
-      "year": "2015"
-    },
-    {
-      "file": "20-slaptas-papludimys.jpg",
-      "title": "Slaptas paplūdimys",
-      "location": "Vieta bus čia"
-    },
-    {
-      "file": "21-ziemos-aleja.jpg",
-      "title": "Žiemos alėja",
-      "location": "Vieta bus čia"
-    },
-    {
-      "file": "22-dviraciu-jura.jpg",
-      "title": "Dviračių jūra",
-      "location": "Amsterdamas, Nyderlandai"
-    },
-    {
-      "file": "23-melyna-siena.jpg",
-      "title": "Mėlyna siena",
-      "location": "Vieta bus čia"
-    },
-    {
-      "file": "25-debesu-jura.jpg",
-      "title": "Debesų jūra",
-      "location": "Vieta bus čia"
-    },
-    {
-      "file": "26-pilka-jura.jpg",
-      "title": "Pilka jūra",
-      "location": "Rytų pakrantė, Islandija"
-    },
-    {
-      "file": "28-zveju-kaimelis.jpg",
-      "title": "Žvejų kaimelis",
-      "location": "Lofotenai, Norvegija"
-    },
-    {
-      "file": "30-rudeninis-kelias.jpg",
-      "title": "Rudeninis kelias",
-      "location": "Vieta bus čia"
-    },
-    {
-      "file": "31-slenis-prie-fjordo.jpg",
-      "title": "Slėnis prie fjordo",
-      "location": "Vakarų fjordai, Islandija"
-    },
-    {
-      "file": "34-zuvu-dziovykla.jpg",
-      "title": "Žuvų džiovykla",
-      "location": "Å, Lofotenai, Norvegija",
-      "year": "2015"
-    },
-    {
-      "file": "36-slaitas-ir-bangos.jpg",
-      "title": "Šlaitas ir bangos",
-      "location": "Rytų fjordai, Islandija"
+      "file": "16-elevatorius.jpg",
+      "title": "",
+      "location": "",
+      "year": ""
     }
   ]
 }

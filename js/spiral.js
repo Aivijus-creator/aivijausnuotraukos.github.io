@@ -117,7 +117,7 @@ export class Spiral {
     const start = c.startAngle * DEG;
     const want = Math.max(1, Math.min(Math.round(c.visible), this.N - 1));
 
-    const build = (PHI) => {
+    const build = (PHI, gap = 1) => {
       const at = (phi) => {
         const r = rIn + (rOut - rIn) * Math.pow(Math.max(0, phi) / PHI, c.radiusCurve);
         const th = start + c.direction * phi;
@@ -129,7 +129,7 @@ export class Spiral {
       const push = () => slots.push({ x: prev[0], y: prev[1], L: sizeAt(phi), rot, t: clamp(phi / PHI), phi });
       push();
       while (slots.length < want) {
-        const need = Math.max(2, c.spacing * 1.12 * sizeAt(phi));
+        const need = Math.max(2, c.spacing * gap * 1.12 * sizeAt(phi));
         let acc = 0;
         while (acc < need) {
           phi += 0.005;
@@ -147,7 +147,8 @@ export class Spiral {
 
     // Jei nuotraukų mažiau, nei telpa į visą viją, vija sutrumpinama taip,
     // kad jos galas vis tiek nutoltų iki pakraščio ir sumažėtų iki taškelių.
-    let hi = Math.max(0.2, c.turns) * 2 * Math.PI;
+    const maxPhi = Math.max(0.2, c.turns) * 2 * Math.PI;
+    let hi = maxPhi;
     let slots = build(hi);
     if (slots.length >= want && want > 1) {
       let lo = 0.3;
@@ -156,6 +157,23 @@ export class Spiral {
         if (build(mid).length >= want) hi = mid; else lo = mid;
       }
       slots = build(hi);
+      // Kai nuotraukų visai mažai, vija neturi susitraukti į trumpą lanką vienoje pusėje:
+      // tarpai padidinami tiek, kad ji vis tiek apjuostų didžiąją rato dalį.
+      const minPhi = Math.min(maxPhi, c.minTurns * 2 * Math.PI);
+      if (hi < minPhi) {
+        let a = 1, b = c.maxGap;
+        for (let i = 0; i < 14; i++) {
+          const mid = (a + b) / 2;
+          if (build(minPhi, mid).length >= want) a = mid; else b = mid;
+        }
+        const wide = build(minPhi, a);
+        if (wide.length >= want) slots = wide;
+        else {                      // net su didžiausiais tarpais netelpa į minPhi – ieškome ilgio su tais tarpais
+          let l = hi, h = minPhi;
+          for (let i = 0; i < 14; i++) { const mid = (l + h) / 2; if (build(mid, c.maxGap).length >= want) h = mid; else l = mid; }
+          slots = build(h, c.maxGap);
+        }
+      }
     }
     this.slots = slots;
     this.avgStep = slots.length > 1 ? Math.max(0.05, slots[slots.length - 1].phi / (slots.length - 1)) : 0.5;
