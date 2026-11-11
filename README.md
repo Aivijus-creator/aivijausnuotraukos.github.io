@@ -61,8 +61,10 @@ npm start          # http://localhost:8080
 Visi nustatymai (tankumas, sukimosi kryptis, dydžiai, inercija, savaiminio sukimosi greitis ir kt.)
 yra faile **`js/config.js`** su paaiškinimais. Fono spalvų ryškumas ir judėjimo greitis – `js/ambient.js`.
 
-Jautrumas telefone keičiamas reikšmėmis `touchStep` (kuo didesnė, tuo ramiau), `touchInertia` ir `touchFlick`,
-touchpad – reikšme `trackpad`.
+Jautrumas telefone keičiamas reikšmėmis `touchStep` (kuo didesnė, tuo ramiau), `touchSlop` (kiek pirštas
+gali krustelėti, kol tai dar laikoma prisilietimu), `touchInertia` ir `touchFlick`; touchpad – reikšme `trackpad`.
+Pirštu paspaudus spiralė prisisuka tik iki didesnių nuotraukų (`touchTapSize`), kad netyčia palietus
+mažą nuotrauką viskas nepradėtų suktis.
 
 Patogiausia derinti gyvai: atidaryk svetainę su **`?derinti`** adreso gale
 (pvz. `http://localhost:8080/?derinti`). Atsiras skydelis su slankikliais; kai rezultatas patinka,

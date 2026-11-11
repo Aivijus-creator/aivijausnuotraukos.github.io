@@ -307,14 +307,22 @@ export class Spiral {
   snap() { this.setTarget(Math.round(this.s), this.reduced ? 16 : 7); }
   cancelWheel() { clearTimeout(this.wheelTimer); this.free = null; }
 
-  release(v, touch = false) {      // inercija: prasisuka toliau ir „prilimpa“ prie artimiausios nuotraukos
+  release(v, touch = false, from = this.s) {   // inercija: prasisuka toliau ir „prilimpa“ prie artimiausios nuotraukos
     if (this.reduced) v = 0;
     v = clamp(v, -45, 45);
     // pirštu braukiant inercija trumpesnė ir ribota, kad vienas brūkštelėjimas nepralėktų pro daug nuotraukų
     const tau = touch ? this.motion.touchInertia : this.motion.inertia;
     const reach = touch ? this.motion.touchFlick : this.motion.flick;
     let t = Math.round(this.s + clamp(v * tau, -reach, reach));
-    if (Math.abs(v) > 1) t = v > 0 ? Math.max(t, Math.ceil(this.s)) : Math.min(t, Math.floor(this.s));
+    if (touch) {
+      // tik aiškus brūkštelėjimas (pakankamai greitas ir bent kiek nubrauktas) perverčia į kitą nuotrauką;
+      // lengvas prisilietimas ar piršto krustelėjimas grąžina spiralę atgal į vietą
+      const moved = this.s - from;
+      if (Math.abs(v) > this.motion.touchFlickSpeed && Math.abs(moved) > 0.16 && moved * v > 0) {
+        const origin = Math.round(from);
+        t = v > 0 ? Math.max(t, origin + 1) : Math.min(t, origin - 1);
+      }
+    } else if (Math.abs(v) > 1) t = v > 0 ? Math.max(t, Math.ceil(this.s)) : Math.min(t, Math.floor(this.s));
     const dist = t - this.s;
     this.v = v;
     const omega = dist * v > 0 ? clamp(Math.abs(v / dist), 0.75 / tau, 9) : 7;
@@ -328,7 +336,7 @@ export class Spiral {
     this.touch();
     this.cancelWheel();
     this.target = null; this.v = 0;
-    this.ptr = { id: e.pointerId, type: e.pointerType, sx: e.clientX, sy: e.clientY, x: e.clientX, y: e.clientY, moved: false, model: 'linear', axis: 'y', heading: null, turn: 0, seg: { x: e.clientX, y: e.clientY }, samples: [] };
+    this.ptr = { id: e.pointerId, type: e.pointerType, sx: e.clientX, sy: e.clientY, x: e.clientX, y: e.clientY, moved: false, model: 'linear', axis: 'y', heading: null, turn: 0, seg: { x: e.clientX, y: e.clientY }, samples: [], s0: this.s, t0: e.timeStamp };
   }
 
   onMove(e) {
@@ -341,7 +349,7 @@ export class Spiral {
     const { cx, cy, U } = this;
     if (!ptr.moved) {
       const mx = x - ptr.sx, my = y - ptr.sy;
-      if (Math.hypot(mx, my) < (ptr.type === 'mouse' ? 4 : 8)) return;
+      if (Math.hypot(mx, my) < (ptr.type === 'mouse' ? 4 : this.motion.touchSlop)) return;   // pirštas visada šiek tiek krusteli
       ptr.moved = true;
       ptr.axis = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
       // pele toliau nuo centro spiralė „sugriebiama“ ir sukama kaip diskas; pirštu – braukiama
@@ -354,12 +362,17 @@ export class Spiral {
     }
     const dx = x - ptr.x, dy = y - ptr.y;
     let ds;
-    if (ptr.model === 'angular') {
+    const mouse = ptr.type === 'mouse';
+    const stepPx = mouse ? clamp(U * this.motion.dragStep, 78, 150) : clamp(U * this.motion.touchStep, 160, 320);
+    if (ptr.model === 'angular' && mouse) {
       const da = wrapPi(Math.atan2(y - cy, x - cx) - Math.atan2(ptr.y - cy, ptr.x - cx));
       const dist = Math.hypot(x - cx, y - cy);
-      ds = (-this.cfg.direction * da / this.avgStep) * smooth(dist / (U * 0.1)) * (ptr.type === 'mouse' ? 1 : this.motion.touchTurn);
+      ds = (-this.cfg.direction * da / this.avgStep) * smooth(dist / (U * 0.1));
+    } else if (ptr.model === 'angular') {
+      // pirštu sukant ratu skaičiuojamas nueitas kelias aplink centrą – jautrumas toks pat kaip braukiant tiesiai
+      const rx = ptr.x - cx, ry = ptr.y - cy, rl = Math.hypot(rx, ry) || 1;
+      ds = (-this.cfg.direction * ((rx * dy - ry * dx) / rl) / stepPx) * smooth(rl / (U * 0.16));
     } else {
-      const stepPx = ptr.type === 'mouse' ? clamp(U * this.motion.dragStep, 78, 150) : clamp(U * this.motion.touchStep, 150, 260);
       ds = -(ptr.axis === 'x' ? dx : dy) / stepPx;
       // jei pirštas ima brėžti ratą – pereiname į sukimą ratu
       if (Math.hypot(x - ptr.seg.x, y - ptr.seg.y) > 16) {
@@ -369,15 +382,16 @@ export class Spiral {
           if (Math.abs(turn) < 1.5) ptr.turn += turn; else ptr.turn = 0;
         }
         ptr.heading = h; ptr.seg = { x, y };
-        if (Math.abs(ptr.turn) > 1.05 && Math.hypot(x - cx, y - cy) > U * 0.12) ptr.model = 'angular';
+        // į sukimą ratu pereinama tik nubrėžus aiškų lanką (pelė – ~60°, pirštas – ~140°, nes nykštys visada brėžia lanką)
+        if (Math.abs(ptr.turn) > (mouse ? 1.05 : 2.45) && Math.hypot(x - cx, y - cy) > U * (mouse ? 0.12 : 0.22)) ptr.model = 'angular';
       }
     }
     this.s += ds;
     ptr.x = x; ptr.y = y;
-    const now = performance.now();
+    const now = e.timeStamp;       // įvykio laikas tikslesnis už „dabar“, kai naršyklė užsiėmusi
     ptr.samples.push({ t: now, s: this.s });
     while (ptr.samples.length > 2 && now - ptr.samples[0].t > 110) ptr.samples.shift();
-    this.lastInput = now;
+    this.lastInput = performance.now();
     this.dirty = true;
   }
 
@@ -389,7 +403,9 @@ export class Spiral {
     this.lastInput = performance.now();
     if (!ptr.moved) {
       if (cancelled) { this.snap(); return; }
-      const d = this.hit(e.clientX, e.clientY);
+      const touch = ptr.type !== 'mouse';
+      // pirštu: ilgas prilaikymas – ne paspaudimas, o į taškelio dydžio nuotraukas nepataikoma netyčia
+      const d = touch && e.timeStamp - ptr.t0 > 500 ? null : this.hit(e.clientX, e.clientY, touch ? this.motion.touchTapSize : 0);
       if (!d) { this.snap(); return; }
       if (Math.abs(d.p) < 0.5) {
         if (Math.abs(this.s - Math.round(this.s)) > 0.02) this.snap();
@@ -397,13 +413,13 @@ export class Spiral {
       } else this.goTo(d.item.index);
       return;
     }
-    const sm = ptr.samples, now = performance.now();
+    const sm = ptr.samples, now = e.timeStamp;
     let v = 0;
     if (sm.length >= 2 && now - sm[sm.length - 1].t < 90) {
       const a = sm[0], b = sm[sm.length - 1];
       if (b.t > a.t) v = (b.s - a.s) / ((b.t - a.t) / 1000);
     }
-    this.release(v, ptr.type !== 'mouse');
+    this.release(v, ptr.type !== 'mouse', ptr.s0);
   }
 
   onWheel(e) {
@@ -429,14 +445,15 @@ export class Spiral {
     }, 150);
   }
 
-  hit(px, py) {
+  hit(px, py, minSize = 0) {
     for (let k = this.drawn.length - 1; k >= 0; k--) {
       const d = this.drawn[k];
-      if (d.alpha < 0.04 || d.p < -0.5 || d.item.index === this.hidden) continue;
+      if (d.alpha < 0.04 || d.p < -0.5 || d.item.index === this.hidden || d.L < minSize) continue;
       const dx = px - d.x, dy = py - d.y;
       const c = Math.cos(-d.rot), s = Math.sin(-d.rot);
       const lx = dx * c - dy * s, ly = dx * s + dy * c;
-      if (Math.abs(lx) <= Math.max(d.w, 30) / 2 && Math.abs(ly) <= Math.max(d.h, 30) / 2) return d;
+      const min = minSize ? 44 : 30;
+      if (Math.abs(lx) <= Math.max(d.w, min) / 2 && Math.abs(ly) <= Math.max(d.h, min) / 2) return d;
     }
     return null;
   }
