@@ -1,6 +1,6 @@
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const mod = (n, m) => ((n % m) + m) % m;
-const EASE = 'cubic-bezier(0.22, 0.85, 0.25, 1)';
+const EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';       // stiprus ease-out
 const T = (x, y, s = 1, rot = 0) => `translate3d(${x}px, ${y}px, 0) rotate(${rot}rad) scale(${s})`;
 
 /* Peržiūra per visą ekraną: nuotrauka išsiplečia iš savo vietos spiralėje ir į ją sugrįžta. */
@@ -15,6 +15,7 @@ export class Viewer {
     this.caption = root.querySelector('.viewer__caption');
     this.titleEl = root.querySelector('.viewer__title');
     this.metaEl = root.querySelector('.viewer__meta');
+    this.descEl = root.querySelector('.viewer__desc');
     this.isOpen = false;
     this.busy = false;
     this.index = -1;
@@ -47,7 +48,7 @@ export class Viewer {
     const hasCaption = !this.caption.hidden;
     const padX = small ? 10 : 76;
     const padTop = small ? 62 : 34;
-    const padBottom = hasCaption ? (small ? 96 : 104) : (small ? 62 : 34);
+    const padBottom = hasCaption ? Math.max(small ? 62 : 34, this.caption.offsetHeight + (small ? 34 : 46)) : (small ? 62 : 34);
     const bw = vw - padX * 2, bh = vh - padTop - padBottom;
     let w = bw, h = w / item.aspect;
     if (h > bh) { h = bh; w = h * item.aspect; }
@@ -55,10 +56,11 @@ export class Viewer {
   }
 
   setCaption(item) {
-    const meta = [item.description, item.year].filter(Boolean).join(' · ');
+    const meta = [item.location, item.year].filter(Boolean).join(' · ');   // vieta ir metai
     this.titleEl.textContent = item.title;
     this.metaEl.textContent = meta;
-    this.caption.hidden = !(item.title || meta);     // jei aprašo nėra – nerodoma nieko
+    this.descEl.textContent = item.description;
+    this.caption.hidden = !(item.title || meta || item.description);   // jei nieko neįrašyta – nerodoma nieko
     this.caption.classList.remove('is-shown');
     requestAnimationFrame(() => this.caption.classList.add('is-shown'));
   }
@@ -112,11 +114,11 @@ export class Viewer {
       sp.render();
       void img.offsetWidth;
       this.root.classList.add('is-open');
-      img.style.transition = this.reduced ? 'opacity 200ms ease' : `transform 560ms ${EASE}`;
+      img.style.transition = this.reduced ? 'opacity 200ms ease' : `transform 460ms ${EASE}`;
       img.style.transform = T(0, 0);
       img.style.opacity = '1';
       this.root.focus({ preventScroll: true });
-      setTimeout(() => { this.busy = false; }, this.reduced ? 200 : 380);
+      setTimeout(() => { this.busy = false; }, this.reduced ? 200 : 300);
     };
     if (img.decode) img.decode().then(start, start); else start();
   }
@@ -126,7 +128,7 @@ export class Viewer {
     this.busy = true;
     const sp = this.spiral, img = this.img, box = this.box;
     const to = sp.rectOf(this.index);
-    const ms = this.reduced ? 180 : 460;
+    const ms = this.reduced ? 160 : 340;            // uždarymas greitesnis už atidarymą
     this.root.classList.remove('is-open', 'is-dragging');
     this.backdrop.style.opacity = '';
     this.backdrop.style.transition = '';
@@ -164,14 +166,14 @@ export class Viewer {
     img.style.opacity = '0';
     img.style.transform = T(shift, 0, 0.97);
     this.stage.append(img);
-    old.style.transition = `transform 280ms ease-out, opacity 220ms ease-out`;
+    old.style.transition = `transform 220ms ${EASE}, opacity 160ms ease-out`;
     old.style.transform = T(fromX - shift, 0, 0.97);
     old.style.opacity = '0';
     void img.offsetWidth;
-    img.style.transition = `transform 420ms ${EASE}, opacity 260ms ease-out`;
+    img.style.transition = `transform 320ms ${EASE}, opacity 200ms ease-out`;
     img.style.transform = T(0, 0);
     img.style.opacity = '1';
-    setTimeout(() => old.remove(), 300);
+    setTimeout(() => old.remove(), 240);
   }
 
   onKey(e) {
@@ -197,7 +199,7 @@ export class Viewer {
   apply(animate = false) {
     const img = this.img;
     if (!img) return;
-    img.style.transition = animate ? `transform 320ms ${EASE}` : 'none';
+    img.style.transition = animate ? `transform 280ms ${EASE}` : 'none';
     img.style.transform = T(this.z.x, this.z.y, this.z.s);
   }
   resetZoom(animate = false) { this.z = { s: 1, x: 0, y: 0 }; if (this.img) this.apply(animate); }
@@ -258,8 +260,8 @@ export class Viewer {
       if (Math.hypot(dx, dy) < 8) return;
       if (this.z.s > 1.02) g.mode = 'pan';
       else if (Math.abs(dx) > Math.abs(dy)) g.mode = 'swipe';
-      else g.mode = dy > 0 ? 'dismiss' : 'none';
-      if (g.mode !== 'none') this.root.classList.add('is-dragging');
+      else g.mode = dy > 0 ? 'dismiss' : 'resist';
+      this.root.classList.add('is-dragging');
     }
     if (g.mode === 'pan') {
       this.z.x = g.zx + dx; this.z.y = g.zy + dy;
@@ -267,6 +269,9 @@ export class Viewer {
     } else if (g.mode === 'swipe') {
       this.img.style.transition = 'none';
       this.img.style.transform = T(dx, 0);
+    } else if (g.mode === 'resist') {                // aukštyn – tik su pasipriešinimu, ne į sieną
+      this.img.style.transition = 'none';
+      this.img.style.transform = T(0, -Math.pow(Math.max(0, -dy), 0.72));
     } else if (g.mode === 'dismiss') {               // braukiant žemyn nuotrauka seka pirštą ir tolsta
       const k = clamp(dy / (window.innerHeight * 0.7), 0, 1);
       this.img.style.transition = 'none';
@@ -294,16 +299,18 @@ export class Viewer {
 
     if (g.mode === 'swipe') {
       const far = Math.min(130, window.innerWidth * 0.22);
-      if (!cancelled && (Math.abs(g.dx) > far || Math.abs(vx) > 0.45) && g.dx * (vx || g.dx) > 0) this.go(g.dx < 0 ? 1 : -1, g.dx);
+      if (!cancelled && (Math.abs(g.dx) > far || Math.abs(vx) > 0.3) && g.dx * (vx || g.dx) > 0) this.go(g.dx < 0 ? 1 : -1, g.dx);
       else this.apply(true);
     } else if (g.mode === 'dismiss') {
-      if (!cancelled && (g.dy > 120 || vy > 0.55)) this.close();
+      if (!cancelled && (g.dy > 120 || vy > 0.35)) this.close();     // užtenka greito brūkštelėjimo
       else {
         this.backdrop.style.transition = ''; this.backdrop.style.opacity = '';
         this.apply(true);
       }
     } else if (g.mode === 'pan') {
       this.clampPan(); this.apply(true);
+    } else if (g.mode === 'resist') {
+      this.apply(true);
     } else if (!g.mode && !cancelled) {
       if (!g.onImg) { this.close(); return; }       // paspaudus šalia nuotraukos – uždaroma
       const now = performance.now();

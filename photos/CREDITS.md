@@ -27,16 +27,10 @@
 | 21-ziemos-aleja.jpg | Ali Inay | Unsplash License | https://unsplash.com/photos/yNaGxHqjOuw |
 | 22-dviraciu-jura.jpg | Jules Verne Times Two | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Detail_of_a_bicycle_handlebar_and_pink_bell_amidst_hundreds_of_parked_bicycles,_Central_Station,_Amsterdam,_Netherlands_julesvernex2.jpg |
 | 23-melyna-siena.jpg | Padurariu Alexandru | Unsplash License | https://unsplash.com/photos/iNmouRApXYM |
-| 24-floristes-rankos.jpg | direct2Florist | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Florist_cutting_stems_with_floristry_scissors.jpg |
 | 25-debesu-jura.jpg | Namphuong Van | Unsplash License | https://unsplash.com/photos/sP4UZnpSiN4 |
 | 26-pilka-jura.jpg | Eric Kilby | CC BY-SA 2.0 | https://commons.wikimedia.org/wiki/File:East_Coastal_Cliffs_-_Iceland.jpg |
-| 27-sviesa-ir-seselis.jpg | LoMit | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Lamp_with_a_lampshade_illuminated_by_sunlight.jpg |
 | 28-zveju-kaimelis.jpg | Ximonic (Simo Räsänen) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:View_over_Reinev%C3%A5gen_towards_north,_Moskenes,_Nordland,_Norway,_2017_April.jpg |
-| 29-duonos-krosnis.jpg | Johann Jaritz | CC BY-SA 3.0 AT | https://commons.wikimedia.org/wiki/File:Stabentheiner_Hof_Brotbackstube_Brotbacken_12062014_221.JPG |
 | 30-rudeninis-kelias.jpg | Tony Webster from Minneapolis, Minnesota, United States | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Autumn_on_Ottawa_National_Forest_Road_Trip_-_Michigan_Upper_Peninsula_Fall_Colors_(29423477943).jpg |
 | 31-slenis-prie-fjordo.jpg | Barry Marsh | Public Domain Mark 1.0 | https://commons.wikimedia.org/wiki/File:Stunning_Westfjords,_Iceland_(48816583203).jpg |
-| 32-kalve.jpg | Kleseus | CC0 | https://commons.wikimedia.org/wiki/File:Anvil,_northern_German_type_with_upsetting_block.jpg |
-| 33-rytine-kava.jpg | Drew Coffman | CC0 | https://commons.wikimedia.org/wiki/File:Latte_art_on_cappuccino_(Unsplash).jpg |
 | 34-zuvu-dziovykla.jpg | DXR | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Codfish_Drying_Flake,_%C3%85_i_Lofoten_20150608_1.jpg |
-| 35-pintines.jpg | Wald1siedel | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Bread_dough_in_baskets_01.JPG |
 | 36-slaitas-ir-bangos.jpg | Eric Kilby | CC BY-SA 2.0 | https://commons.wikimedia.org/wiki/File:Coastline_Looking_North_-_Iceland.jpg |

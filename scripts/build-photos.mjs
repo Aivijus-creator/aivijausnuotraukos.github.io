@@ -80,7 +80,7 @@ for (const tier of Object.keys(TIERS)) {
 await fs.writeFile(path.join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 1) + '\n');
 
 // photos.json: pridedame naujus failus, perspėjame apie trūkstamus
-let list = { title: 'Galerija', photos: [] };
+let list = { title: 'aiv.raw', photos: [] };
 try { list = JSON.parse(await fs.readFile(LIST, 'utf8')); } catch (err) {
   if (await exists(LIST)) { console.error('\nphotos.json yra sugadintas (', err.message, ') – pataisyk jį ir paleisk dar kartą.'); process.exit(1); }
 }
@@ -89,8 +89,9 @@ list.photos ||= [];
 const listed = new Set(list.photos.map((p) => p.file));
 let added = 0;
 for (const file of files) {
-  if (!listed.has(file)) { list.photos.push({ file, title: '', description: '', year: '' }); added++; console.log('į sąrašą  ', file); }
+  if (!listed.has(file)) { list.photos.push({ file, title: '', location: '', year: '' }); added++; console.log('į sąrašą  ', file); }
 }
+for (const p of list.photos) if (manifest[p.file] && !(p.location || '').trim()) console.warn('BE VIETOS ', `${p.file} – photos.json neįrašyta „location“ (kur nuotrauka daryta)`);
 for (const p of list.photos) if (!manifest[p.file]) console.warn('DĖMESIO   ', `photos.json mini „${p.file}“, bet tokio failo aplanke /photos nėra`);
 if (added) await fs.writeFile(LIST, JSON.stringify(list, null, 2) + '\n');
 

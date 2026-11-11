@@ -18,6 +18,8 @@ const FIELDS = [
   ['spiral', 'farOpacity', 'Tolimų permatomumas', 0, 1, 0.01],
   ['spiral', 'farBlur', 'Tolimų išliejimas', 0, 1, 0.01],
   ['spiral', 'rotationFollow', 'Pasukimas pagal spiralę', 0, 1.5, 0.01],
+  ['sun', 'size', 'Saulės dydis', 0.1, 0.6, 0.005],
+  ['sun', 'follow', 'Saulės sukimasis su spirale', 0, 20, 0.5],
   ['motion', 'inertia', 'Inercija (s)', 0.1, 1.2, 0.01],
   ['motion', 'idleSpeed', 'Savaiminio sukimosi greitis', 0, 0.6, 0.01],
 ];
@@ -35,6 +37,7 @@ export function mountTune(spiral) {
       CONFIG[group][key] = Number(input.value);
       out.textContent = input.value;
       spiral.invalidate();
+      document.getElementById('stage').style.setProperty('--sun-r', `${(CONFIG.sun.size * spiral.U).toFixed(1)}px`);
     });
     row.append(label, out, input);
     panel.append(row);

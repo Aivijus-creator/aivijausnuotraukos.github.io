@@ -5,19 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b0b0f">
   <meta name="color-scheme" content="dark">
-  <title>Spiralės galerija</title>
-  <meta name="description" content="Interaktyvi nuotraukų galerija, išdėstyta spirale.">
+  <title>aiv.raw</title>
+  <meta name="description" content="aiv.raw – gamtos fotografija. Nuotraukos sukasi spirale aplink saulę.">
+  <meta property="og:title" content="aiv.raw">
+  <meta property="og:description" content="Gamtos fotografija. Nuotraukos sukasi spirale aplink saulę.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23060608'/%3E%3Ccircle cx='16' cy='16' r='8' fill='%23ffb443'/%3E%3Ccircle cx='16' cy='16' r='12.5' fill='none' stroke='%23f47a1f' stroke-width='1.2' stroke-dasharray='1.6 3.3'/%3E%3C/svg%3E">
   <link rel="preload" href="fonts/megrim-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="photos.json" as="fetch" crossorigin>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <main class="stage" id="stage">
+    <div class="sun" id="sun" aria-hidden="true">
+      <div class="sun__turn">
+        <canvas class="sun__rays sun__rays--a" width="1024" height="1024"></canvas>
+        <canvas class="sun__rays sun__rays--b" width="1024" height="1024"></canvas>
+      </div>
+      <div class="sun__corona"></div>
+      <div class="sun__disc">
+        <canvas class="sun__surface sun__surface--a" width="512" height="512"></canvas>
+        <canvas class="sun__surface sun__surface--b" width="512" height="512"></canvas>
+      </div>
+    </div>
     <canvas class="spiral" id="spiral" tabindex="0" role="application"
-            aria-label="Spiralės galerija. Rodyklėmis keiskite nuotrauką, Enter – atidaryti per visą ekraną."></canvas>
+            aria-label="Nuotraukų spiralė. Rodyklėmis keiskite nuotrauką, Enter – atidaryti per visą ekraną."></canvas>
     <h1 class="brand" id="brand"></h1>
     <p class="counter" id="counter" aria-hidden="true"></p>
+    <p class="place" id="place" aria-hidden="true">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14.5s4.5-4.2 4.5-8A4.5 4.5 0 0 0 3.5 6.5c0 3.8 4.5 8 4.5 8z"/><circle cx="8" cy="6.4" r="1.5"/></svg>
+      <span id="place-text"></span>
+    </p>
     <p class="hint" id="hint">Sukite, kad naršytumėte</p>
+    <button class="still" id="still" type="button" aria-pressed="false" aria-label="Sustabdyti judesį">
+      <svg class="still__pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg>
+      <svg class="still__play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2l7.5 4.8L5 12.8z"/></svg>
+    </button>
     <p class="sr-only" id="live" aria-live="polite"></p>
   </main>
 
@@ -36,6 +59,7 @@
     <div class="viewer__caption" hidden>
       <h2 class="viewer__title"></h2>
       <p class="viewer__meta"></p>
+      <p class="viewer__desc"></p>
     </div>
   </div>
 

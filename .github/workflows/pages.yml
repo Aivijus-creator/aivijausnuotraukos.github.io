@@ -1,7 +1,7 @@
 # Paskelbia galeriją per GitHub Pages kiekvieną kartą, kai pakeitimai patenka į „main“.
 # Pakeliui automatiškai sumažina nuotraukas ir paverčia jas WebP (npm run photos).
 # Kad veiktų: Settings → Pages → Build and deployment → Source: „GitHub Actions“.
-name: Paskelbti galeriją
+name: Paskelbti svetainę
 
 on:
   push:

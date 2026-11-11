@@ -32,6 +32,8 @@ export class Spiral {
     this.omega = 7;
     this.auto = false;
     this.autoV = 0;
+    this.still = false;           // lankytojas sustabdė savaiminį judesį
+    this.wrapOffset = 0;          // kad fono sukimasis nešoktelėtų, kai s grįžta į ratą
     this.paused = false;
     this.hidden = -1;
     this.ptr = null;
@@ -56,7 +58,6 @@ export class Spiral {
     for (const item of items) {
       const [r, g, b] = mixColor(item.color, 0.2);
       item.placeholder = `rgb(${r},${g},${b})`;
-      item.glow = mixColor(item.color, 0.9).join(',');
       item.sm = {}; item.md = {};
     }
 
@@ -287,7 +288,7 @@ export class Spiral {
   step(dir) {
     const base = this.target != null && this.free == null ? this.target : this.s;
     this.cancelWheel();
-    this.setTarget(Math.round(base) + dir, this.reduced ? 16 : 8);
+    this.setTarget(Math.round(base) + dir, this.reduced ? 16 : 10);
     this.markInteracted();
   }
   goTo(index, shortest = false) {
@@ -299,6 +300,8 @@ export class Spiral {
     if (dist > 0.5) this.markInteracted();
   }
   jumpTo(index) { this.cancelWheel(); this.s = index; this.v = 0; this.target = null; this.dirty = true; }
+  get travel() { return this.s + this.wrapOffset; }
+  setStill(still) { this.still = still; if (still && this.auto) { this.auto = false; this.autoV = 0; this.snap(); } this.lastInput = performance.now(); }
   snap() { this.setTarget(Math.round(this.s), this.reduced ? 16 : 7); }
   cancelWheel() { clearTimeout(this.wheelTimer); this.free = null; }
 
@@ -460,7 +463,9 @@ export class Spiral {
       this.v = (this.v - w * c * dt) * e;
       moving = true;
       if (this.free == null && Math.abs(this.s - this.target) < 0.002 && Math.abs(this.v) < 0.03) {
-        this.s = mod(this.target, this.N);
+        const wrapped = mod(this.target, this.N);
+        this.wrapOffset += this.target - wrapped;
+        this.s = wrapped;
         this.v = 0; this.target = null;
         this.lastInput = now;
         this.emit('settle', mod(Math.round(this.s), this.N));
@@ -469,7 +474,7 @@ export class Spiral {
       this.autoV = lerp(this.autoV, this.motion.idleSpeed, 1 - Math.exp(-dt * 0.7));
       this.s += this.autoV * dt;
       moving = true;
-    } else if (!this.reduced && !this.paused && !this.ptr && this.intro >= 1 && this.N > 1 && now - this.lastInput > this.motion.idleDelay * 1000) {
+    } else if (!this.reduced && !this.still && !this.paused && !this.ptr && this.intro >= 1 && this.N > 1 && now - this.lastInput > this.motion.idleDelay * 1000) {
       this.auto = true; this.autoV = 0;
     }
 
@@ -497,22 +502,12 @@ export class Spiral {
     }
     list.sort((a, b) => (a.p >= 0 ? -a.p : 1 - a.p) - (b.p >= 0 ? -b.p : 1 - b.p));
 
-    for (const d of list) {
-      if (Math.abs(d.p) >= 1 || d.item.index === this.hidden) continue;
-      const k = (1 - Math.abs(d.p)) * d.alpha * (this.intro < 1 ? this.intro : 1);
-      const R = d.L * 1.15;
-      const g = ctx.createRadialGradient(d.x, d.y, d.L * 0.2, d.x, d.y, R);
-      g.addColorStop(0, `rgba(${d.item.glow},${0.3 * k})`);
-      g.addColorStop(1, `rgba(${d.item.glow},0)`);
-      ctx.fillStyle = g;
-      ctx.fillRect(d.x - R, d.y - R, R * 2, R * 2);
-    }
-
     for (const d of list) if (d.item.index !== this.hidden) this.drawItem(d, now);
     this.drawn = list;
 
     const ci = mod(Math.round(this.s), N);
     if (ci !== this.centerIndex) { this.centerIndex = ci; this.emit('center', ci); }
+    if (this.travel !== this.lastTravel) { this.lastTravel = this.travel; this.emit('spin', this.travel); }
 
     // kraunamos tik matomos ir greitai pasirodysiančios nuotraukos, artimiausios centrui – pirmos
     const order = list.slice().sort((a, b) => Math.abs(a.p) - Math.abs(b.p));
@@ -537,7 +532,7 @@ export class Spiral {
   drawStars() {
     const { ctx, cx, cy, W, H } = this;
     const R = Math.hypot(W, H) / 2;
-    const spin = this.s * 0.035 * this.cfg.direction;
+    const spin = this.travel * 0.035 * this.cfg.direction;
     const k = this.intro < 1 ? easeOut(this.intro) : 1;
     ctx.fillStyle = '#fff';
     for (const st of this.stars) {

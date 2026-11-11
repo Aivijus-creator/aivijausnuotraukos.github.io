@@ -1,6 +1,7 @@
 import { Spiral } from './spiral.js';
 import { Viewer } from './viewer.js';
 import { CONFIG } from './config.js';
+import { mountSun } from './sun.js';
 
 const $ = (id) => document.getElementById(id);
 const mod = (n, m) => ((n % m) + m) % m;
@@ -42,10 +43,11 @@ async function init() {
       const meta = manifest && manifest[p.file];
       const orig = 'photos/' + encodePath(p.file);
       const title = (p.title || '').trim(), description = (p.description || '').trim(), year = p.year ? String(p.year).trim() : '';
+      const location = (p.location || '').trim();
       const opt = (tier) => `optimized/${tier}/${encodePath(webp(p.file))}`;
       return {
-        index, file: p.file, title, description, year,
-        alt: [title, description, year].filter(Boolean).join(', ') || `Nuotrauka ${index + 1}`,
+        index, file: p.file, title, location, description, year,
+        alt: [title, location, year].filter(Boolean).join(', ') || description || `Nuotrauka ${index + 1}`,
         aspect: meta ? meta.w / meta.h : 1.5,
         known: !!meta,
         color: (meta && meta.color) || '#3c3c48',
@@ -54,7 +56,7 @@ async function init() {
       };
     });
 
-  const title = (!Array.isArray(list) && list.title) || 'Galerija';
+  const title = (!Array.isArray(list) && list.title) || 'aiv.raw';
   document.title = title;
   $('brand').textContent = title;
   if (!items.length) { message('Galerijoje kol kas nėra nuotraukų.'); document.body.classList.add('is-ready'); return; }
@@ -66,7 +68,42 @@ async function init() {
   const viewer = new Viewer($('viewer'), spiral, items, { reducedMotion: reducedQuery.matches });
   reducedQuery.addEventListener('change', (e) => { spiral.reduced = viewer.reduced = e.matches; });
 
-  spiral.on('center', (i) => { $('counter').textContent = `${pad(i + 1)} / ${pad(N)}`; });
+  // saulė fone: jos dydis derinamas su spirale, o spinduliai pasisuka kartu su ja
+  const sun = mountSun($('sun'));
+  const sizeSun = () => $('stage').style.setProperty('--sun-r', `${(CONFIG.sun.size * spiral.U).toFixed(1)}px`);
+  sizeSun();
+  new ResizeObserver(sizeSun).observe($('stage'));
+  spiral.on('spin', (travel) => sun.spin(travel * CONFIG.sun.follow * CONFIG.spiral.direction));
+
+  // vieta po centrine nuotrauka: sukant išnyksta, sustojus – parodoma
+  const place = $('place'), placeText = $('place-text');
+  let placeTimer = 0;
+  const showPlace = (i) => {
+    const item = items[i];
+    placeText.textContent = item.location;
+    place.classList.toggle('is-empty', !item.location);
+    const box = spiral.centerBox(item.aspect);
+    const below = Math.max(box.h / 2, CONFIG.sun.size * spiral.U * 1.03) + 14;
+    place.style.transform = `translateY(${Math.round(Math.min(spiral.cy + below, spiral.H - 64))}px)`;
+    place.classList.add('is-shown');
+  };
+  spiral.on('center', (i) => {
+    $('counter').textContent = `${pad(i + 1)} / ${pad(N)}`;
+    place.classList.remove('is-shown');
+    clearTimeout(placeTimer);
+    placeTimer = setTimeout(() => showPlace(i), 260);
+  });
+  window.addEventListener('resize', () => { clearTimeout(placeTimer); placeTimer = setTimeout(() => showPlace(spiral.centerIndex), 200); });
+
+  // mygtukas, kuris sustabdo visą savaiminį judesį (saulę ir sukimąsi)
+  const still = $('still');
+  still.addEventListener('click', () => {
+    const on = still.getAttribute('aria-pressed') !== 'true';
+    still.setAttribute('aria-pressed', String(on));
+    still.setAttribute('aria-label', on ? 'Tęsti judesį' : 'Sustabdyti judesį');
+    document.body.classList.toggle('is-still', on);
+    spiral.setStill(on);
+  });
   spiral.on('interact', () => $('hint').classList.add('is-gone'));
   spiral.on('open', (i) => viewer.open(i));
   spiral.on('settle', (i) => {
@@ -93,7 +130,7 @@ async function init() {
 
   document.body.classList.add('is-ready');
   if (/[?&](derinti|tune)\b/.test(location.search)) import('./tune.js').then((m) => m.mountTune(spiral));
-  window.__gallery = { spiral, viewer, config: CONFIG };   // patogu derinti naršyklės konsolėje
+  window.__gallery = { spiral, viewer, sun, config: CONFIG };   // patogu derinti naršyklės konsolėje
 }
 
 init();
