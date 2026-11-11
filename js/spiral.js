@@ -307,11 +307,13 @@ export class Spiral {
   snap() { this.setTarget(Math.round(this.s), this.reduced ? 16 : 7); }
   cancelWheel() { clearTimeout(this.wheelTimer); this.free = null; }
 
-  release(v) {                     // inercija: prasisuka toliau ir „prilimpa“ prie artimiausios nuotraukos
+  release(v, touch = false) {      // inercija: prasisuka toliau ir „prilimpa“ prie artimiausios nuotraukos
     if (this.reduced) v = 0;
     v = clamp(v, -45, 45);
-    const tau = this.motion.inertia;
-    let t = Math.round(this.s + v * tau);
+    // pirštu braukiant inercija trumpesnė ir ribota, kad vienas brūkštelėjimas nepralėktų pro daug nuotraukų
+    const tau = touch ? this.motion.touchInertia : this.motion.inertia;
+    const reach = touch ? this.motion.touchFlick : this.motion.flick;
+    let t = Math.round(this.s + clamp(v * tau, -reach, reach));
     if (Math.abs(v) > 1) t = v > 0 ? Math.max(t, Math.ceil(this.s)) : Math.min(t, Math.floor(this.s));
     const dist = t - this.s;
     this.v = v;
@@ -355,9 +357,9 @@ export class Spiral {
     if (ptr.model === 'angular') {
       const da = wrapPi(Math.atan2(y - cy, x - cx) - Math.atan2(ptr.y - cy, ptr.x - cx));
       const dist = Math.hypot(x - cx, y - cy);
-      ds = (-this.cfg.direction * da / this.avgStep) * smooth(dist / (U * 0.1));
+      ds = (-this.cfg.direction * da / this.avgStep) * smooth(dist / (U * 0.1)) * (ptr.type === 'mouse' ? 1 : this.motion.touchTurn);
     } else {
-      const stepPx = clamp(U * this.motion.dragStep, 78, 150);
+      const stepPx = ptr.type === 'mouse' ? clamp(U * this.motion.dragStep, 78, 150) : clamp(U * this.motion.touchStep, 150, 260);
       ds = -(ptr.axis === 'x' ? dx : dy) / stepPx;
       // jei pirštas ima brėžti ratą – pereiname į sukimą ratu
       if (Math.hypot(x - ptr.seg.x, y - ptr.seg.y) > 16) {
@@ -401,7 +403,7 @@ export class Spiral {
       const a = sm[0], b = sm[sm.length - 1];
       if (b.t > a.t) v = (b.s - a.s) / ((b.t - a.t) / 1000);
     }
-    this.release(v);
+    this.release(v, ptr.type !== 'mouse');
   }
 
   onWheel(e) {
@@ -411,6 +413,7 @@ export class Spiral {
     if (e.deltaMode === 1) d *= 33; else if (e.deltaMode === 2) d *= this.H;
     if (!d) return;
     d = clamp(d, -260, 260);
+    if (e.deltaMode === 0 && Math.abs(d) < 50) d *= this.motion.trackpad;   // touchpad siunčia daug smulkių žingsnelių
     this.touch();
     if (this.free == null) this.free = this.target != null ? this.target : this.s;
     this.free += d / this.motion.wheelStep;

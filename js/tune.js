@@ -19,6 +19,10 @@ const FIELDS = [
   ['spiral', 'farBlur', 'Tolimų išliejimas', 0, 1, 0.01],
   ['spiral', 'rotationFollow', 'Pasukimas pagal spiralę', 0, 1.5, 0.01],
   ['motion', 'inertia', 'Inercija (s)', 0.1, 1.2, 0.01],
+  ['motion', 'touchStep', 'Braukimo pirštu ramumas', 0.15, 0.9, 0.01],
+  ['motion', 'touchInertia', 'Inercija pirštu (s)', 0, 0.6, 0.01],
+  ['motion', 'touchFlick', 'Brūkštelėjimo nuotolis (nuotr.)', 0, 6, 0.1],
+  ['motion', 'trackpad', 'Touchpad jautrumas', 0.1, 1, 0.05],
   ['motion', 'idleSpeed', 'Savaiminio sukimosi greitis', 0, 0.6, 0.01],
 ];
 

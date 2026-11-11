@@ -61,6 +61,9 @@ npm start          # http://localhost:8080
 Visi nustatymai (tankumas, sukimosi kryptis, dydžiai, inercija, savaiminio sukimosi greitis ir kt.)
 yra faile **`js/config.js`** su paaiškinimais. Fono spalvų ryškumas ir judėjimo greitis – `js/ambient.js`.
 
+Jautrumas telefone keičiamas reikšmėmis `touchStep` (kuo didesnė, tuo ramiau), `touchInertia` ir `touchFlick`,
+touchpad – reikšme `trackpad`.
+
 Patogiausia derinti gyvai: atidaryk svetainę su **`?derinti`** adreso gale
 (pvz. `http://localhost:8080/?derinti`). Atsiras skydelis su slankikliais; kai rezultatas patinka,
 spausk „Kopijuoti nustatymus“ ir įklijuok reikšmes į `js/config.js`.

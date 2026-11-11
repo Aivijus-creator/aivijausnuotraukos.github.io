@@ -28,6 +28,12 @@ export const CONFIG = {
     inertia: 0.42,       // inercijos trukmė sekundėmis – kuo daugiau, tuo „sunkesnė“ spiralė
     wheelStep: 100,      // kiek ratuko pikselių atitinka vieną nuotrauką
     dragStep: 0.2,       // tempimo jautrumas (ekrano dalis vienai nuotraukai)
+    flick: 8,            // daugiausia nuotraukų, kiek spiralė prasisuka pati po stipraus tempimo pele
+    trackpad: 0.5,       // touchpad jautrumas (1 = kaip pelės ratuko, mažiau – ramiau)
+    touchStep: 0.46,     // braukimo pirštu jautrumas: ekrano dalis vienai nuotraukai (daugiau – ramiau)
+    touchInertia: 0.16,  // inercija po braukimo pirštu, sekundėmis
+    touchFlick: 1.2,     // daugiausia nuotraukų, kiek prasisuka pati po brūkštelėjimo pirštu
+    touchTurn: 0.55,     // sukimo ratu pirštu jautrumas (1 = nuotraukos seka pirštą tiksliai)
     idleDelay: 5,        // po kiek sekundžių spiralė pradeda suktis pati
     idleSpeed: 0.1,      // savaiminio sukimosi greitis (nuotraukų per sekundę)
     introDuration: 1.8,  // įžanginės animacijos trukmė sekundėmis
