@@ -1,0 +1,4 @@
+node_modules/
+optimized/
+_site/
+.DS_Store
