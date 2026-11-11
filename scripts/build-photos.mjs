@@ -80,7 +80,7 @@ for (const tier of Object.keys(TIERS)) {
 await fs.writeFile(path.join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 1) + '\n');
 
 // photos.json: pridedame naujus failus, perspėjame apie trūkstamus
-let list = { title: 'aiv.raw', photos: [] };
+let list = { title: 'aivijaus.raw', photos: [] };
 try { list = JSON.parse(await fs.readFile(LIST, 'utf8')); } catch (err) {
   if (await exists(LIST)) { console.error('\nphotos.json yra sugadintas (', err.message, ') – pataisyk jį ir paleisk dar kartą.'); process.exit(1); }
 }

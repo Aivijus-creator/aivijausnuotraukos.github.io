@@ -29,7 +29,7 @@
 }
 
 :root {
-  --bg: #060504;
+  --bg: #050506;
   --ink: #ece8df;
   --display: "Megrim", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
@@ -66,57 +66,26 @@ body {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: radial-gradient(120% 120% at 50% 50%, #0b0705 0%, #050403 46%, #010101 100%), var(--bg);
+  background: var(--bg);
 }
 
-/* ───────── Saulė fone ───────── */
-.sun {
+/* ───────── Fonas: centrinės nuotraukos spalvos ───────── */
+.ambient {
   position: absolute;
-  inset: 0;
-  overflow: hidden;
+  left: -6%; top: -6%;
+  width: 112%; height: 112%;
+  display: block;
   pointer-events: none;
   opacity: 0;
-  transform: scale(0.9);
-  transition: opacity 2.2s ease-out, transform 2.6s var(--ease);
+  transition: opacity 1.8s ease-out;
 }
-.is-ready .sun { opacity: 1; transform: none; }
-.sun__turn, .sun__rays, .sun__corona, .sun__disc, .sun__surface { position: absolute; left: 50%; top: 50%; }
-.sun__turn { width: 0; height: 0; will-change: transform; }
-.sun__rays {
-  width: 190vmax; height: 190vmax;
-  margin: -95vmax 0 0 -95vmax;
-  will-change: transform;
+.is-ready .ambient { opacity: 1; }
+.veil {                              /* pakraščiai tamsėja iki juodos, kad nuotraukos šviestų */
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.14) 50%, rgba(0, 0, 0, 0.52) 84%, rgba(0, 0, 0, 0.78) 100%);
 }
-.sun__rays--a { animation: sun-spin 150s linear infinite, sun-flicker 6s ease-in-out infinite alternate; }
-.sun__rays--b { animation: sun-spin 230s linear infinite reverse, sun-flicker 9s ease-in-out -3s infinite alternate; }
-.sun__corona {
-  width: calc(var(--sun-r) * 5.6); height: calc(var(--sun-r) * 5.6);
-  margin: calc(var(--sun-r) * -2.8) 0 0 calc(var(--sun-r) * -2.8);
-  border-radius: 50%;
-  background: radial-gradient(closest-side,
-    rgba(255, 196, 104, 0.95) 0%, rgba(255, 160, 64, 0.8) 35.7%, rgba(255, 118, 38, 0.34) 43%,
-    rgba(214, 78, 22, 0.14) 56%, rgba(150, 50, 14, 0.05) 76%, rgba(120, 40, 10, 0) 100%);
-  animation: sun-breathe 7s ease-in-out infinite alternate;
-  will-change: transform, opacity;
-}
-.sun__disc {
-  width: calc(var(--sun-r) * 2); height: calc(var(--sun-r) * 2);
-  margin: calc(var(--sun-r) * -1) 0 0 calc(var(--sun-r) * -1);
-  border-radius: 50%;
-  overflow: hidden;
-  background: radial-gradient(closest-side, #fffbe8 0%, #ffeaa0 34%, #ffd060 62%, #ffab3a 84%, #f8892a 95%, #ee6f1c 100%);
-  box-shadow: 0 0 calc(var(--sun-r) * 0.1) rgba(255, 206, 120, 0.9), 0 0 calc(var(--sun-r) * 0.3) rgba(255, 150, 50, 0.6), 0 0 calc(var(--sun-r) * 0.7) rgba(255, 105, 30, 0.3);
-}
-.sun__surface { width: 124%; height: 124%; margin: -62% 0 0 -62%; will-change: transform; }
-.sun__surface--a { animation: sun-spin 95s linear infinite; }
-.sun__surface--b { animation: sun-spin 140s linear infinite reverse; opacity: 0.8; }
-@keyframes sun-spin { to { transform: rotate(360deg); } }
-@keyframes sun-flicker { from { opacity: 0.68; } to { opacity: 1; } }
-@keyframes sun-breathe {
-  from { transform: scale(0.97); opacity: 0.82; }
-  to { transform: scale(1.06); opacity: 1; }
-}
-.is-still .sun__rays, .is-still .sun__corona, .is-still .sun__surface { animation-play-state: paused; }
 
 .spiral {
   position: absolute;
@@ -231,7 +200,7 @@ body {
 .viewer[hidden] { display: none; }
 .viewer__backdrop {
   position: absolute; inset: 0;
-  background: rgba(4, 3, 3, 0.86);   /* spiralė ir saulė lieka matomos kaip patamsėjęs fonas */
+  background: rgba(4, 4, 5, 0.86);   /* spiralė lieka matoma kaip patamsėjęs fonas */
   opacity: 0;
   transition: opacity 0.32s ease-out;
 }
@@ -342,8 +311,7 @@ body {
 .tune button { margin-top: 12px; width: 100%; padding: 8px; border-radius: 6px; border: 1px solid rgba(236, 232, 223, 0.25); background: transparent; color: inherit; cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {
-  .brand, .counter, .hint, .sun, .viewer__backdrop, .viewer__btn, .viewer__caption { transition-duration: 0.2s !important; transition-delay: 0s !important; }
-  .sun { transform: none; }
-  .is-ready .hint, .sun__rays, .sun__corona, .sun__surface { animation: none; }
+  .brand, .counter, .hint, .ambient, .viewer__backdrop, .viewer__btn, .viewer__caption { transition-duration: 0.2s !important; transition-delay: 0s !important; }
+  .is-ready .hint { animation: none; }
   .still { display: none; }
 }

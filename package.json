@@ -1,9 +1,9 @@
 {
-  "name": "aiv-raw",
+  "name": "aivijaus-raw",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "aiv.raw – spiralės foto galerija, statinė svetainė",
+  "description": "aivijaus.raw – spiralės foto galerija, statinė svetainė",
   "scripts": {
     "photos": "node scripts/build-photos.mjs",
     "start": "node scripts/serve.mjs"

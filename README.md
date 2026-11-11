@@ -1,8 +1,8 @@
-# aiv.raw
+# aivijaus.raw
 
-Vieno puslapio interaktyvi nuotraukų galerija: nuotraukos spirale sukasi aplink saulę – ratuku, tempimu,
-rodyklėmis ar braukimu, o paspaudus atsidaro per visą ekraną. Prie kiekvienos nuotraukos rodoma vieta,
-kur ji daryta. Svetainė visiškai statinė – be serverio ir duomenų bazės.
+Vieno puslapio interaktyvi nuotraukų galerija: nuotraukos sukasi spirale – ratuku, tempimu, rodyklėmis ar
+braukimu, o paspaudus atsidaro per visą ekraną. Fonas nusidažo centre esančios nuotraukos spalvomis ir
+lėtai mirguliuoja. Prie kiekvienos nuotraukos rodoma vieta, kur ji daryta. Svetainė visiškai statinė – be serverio ir duomenų bazės.
 
 ## Kaip pridėti ar pakeisti nuotraukas
 
@@ -21,7 +21,7 @@ Publikuojant per GitHub (žr. žemiau) 2 žingsnis atliekamas automatiškai – 
 
 ```json
 {
-  "title": "aiv.raw",
+  "title": "aivijaus.raw",
   "photos": [
     { "file": "01-fjordas.jpg", "title": "Veidrodinis fjordas", "location": "Sløverfjorden, Lofotenai, Norvegija", "year": "2015" },
     { "file": "02-krioklys.jpg", "location": "Vakarų fjordai, Islandija" },
@@ -58,9 +58,8 @@ npm start          # http://localhost:8080
 
 ## Spiralės derinimas
 
-Visi nustatymai (tankumas, sukimosi kryptis, dydžiai, inercija, savaiminio sukimosi greitis, saulės dydis
-ir kt.) yra faile **`js/config.js`** su paaiškinimais. Saulės spalvos ir judėjimo greitis – `css/style.css`
-skyriuje „Saulė fone“.
+Visi nustatymai (tankumas, sukimosi kryptis, dydžiai, inercija, savaiminio sukimosi greitis ir kt.)
+yra faile **`js/config.js`** su paaiškinimais. Fono spalvų ryškumas ir judėjimo greitis – `js/ambient.js`.
 
 Patogiausia derinti gyvai: atidaryk svetainę su **`?derinti`** adreso gale
 (pvz. `http://localhost:8080/?derinti`). Atsiras skydelis su slankikliais; kai rezultatas patinka,
@@ -77,7 +76,7 @@ spausk „Kopijuoti nustatymus“ ir įklijuok reikšmes į `js/config.js`.
 | Peržiūroje: ← →, braukimas į šonus, rodyklės šonuose | Kita / ankstesnė nuotrauka |
 | Peržiūroje: Esc, ×, paspaudimas šalia nuotraukos, braukimas žemyn | Uždaryti |
 | Peržiūroje: du pirštai, dvigubas bakstelėjimas, Ctrl + ratukas | Priartinti |
-| Mygtukas apatiniame dešiniajame kampe | Sustabdyti / tęsti saulės ir spiralės savaiminį judesį |
+| Mygtukas apatiniame dešiniajame kampe | Sustabdyti / tęsti fono ir spiralės savaiminį judesį |
 
 Kiekviena nuotrauka turi savo nuorodą: `…/#nuotrauka-12` iškart atidaro galeriją su 12-ąja nuotrauka centre.
 
@@ -100,7 +99,7 @@ index.html            puslapis
 css/style.css         išvaizda, šriftai
 js/config.js          spiralės ir judesio nustatymai
 js/spiral.js          spiralė (piešiama <canvas>), valdymas, inercija
-js/sun.js             saulė fone (spinduliai ir paviršius)
+js/ambient.js         fonas: centrinės nuotraukos spalvos
 js/viewer.js          peržiūra per visą ekraną, priartinimas, gestai
 js/main.js            paleidimas, klaviatūra, nuorodos
 js/tune.js            derinimo skydelis (?derinti)

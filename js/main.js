@@ -1,7 +1,7 @@
 import { Spiral } from './spiral.js';
 import { Viewer } from './viewer.js';
 import { CONFIG } from './config.js';
-import { mountSun } from './sun.js';
+import { mountAmbient } from './ambient.js';
 
 const $ = (id) => document.getElementById(id);
 const mod = (n, m) => ((n % m) + m) % m;
@@ -56,7 +56,7 @@ async function init() {
       };
     });
 
-  const title = (!Array.isArray(list) && list.title) || 'aiv.raw';
+  const title = (!Array.isArray(list) && list.title) || 'aivijaus.raw';
   document.title = title;
   $('brand').textContent = title;
   if (!items.length) { message('Galerijoje kol kas nėra nuotraukų.'); document.body.classList.add('is-ready'); return; }
@@ -68,12 +68,13 @@ async function init() {
   const viewer = new Viewer($('viewer'), spiral, items, { reducedMotion: reducedQuery.matches });
   reducedQuery.addEventListener('change', (e) => { spiral.reduced = viewer.reduced = e.matches; });
 
-  // saulė fone: jos dydis derinamas su spirale, o spinduliai pasisuka kartu su ja
-  const sun = mountSun($('sun'));
-  const sizeSun = () => $('stage').style.setProperty('--sun-r', `${(CONFIG.sun.size * spiral.U).toFixed(1)}px`);
-  sizeSun();
-  new ResizeObserver(sizeSun).observe($('stage'));
-  spiral.on('spin', (travel) => sun.spin(travel * CONFIG.sun.follow * CONFIG.spiral.direction));
+  // fonas nusidažo centrinės nuotraukos spalvomis ir lėtai mirguliuoja
+  const ambient = mountAmbient($('ambient'), { reducedMotion: reducedQuery.matches });
+  const hexToRgb = (hex) => { const n = parseInt(hex.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+  const paint = (i) => ambient.setPalette(items[i].palette || [hexToRgb(items[i].color)]);
+  spiral.on('palette', (item) => { if (item.index === spiral.centerIndex) paint(item.index); });
+  spiral.on('spin', (travel) => ambient.spin(travel * 0.35 * CONFIG.spiral.direction));
+  reducedQuery.addEventListener('change', (e) => ambient.setReduced(e.matches));
 
   // vieta po centrine nuotrauka: sukant išnyksta, sustojus – parodoma
   const place = $('place'), placeText = $('place-text');
@@ -83,19 +84,20 @@ async function init() {
     placeText.textContent = item.location;
     place.classList.toggle('is-empty', !item.location);
     const box = spiral.centerBox(item.aspect);
-    const below = Math.max(box.h / 2, CONFIG.sun.size * spiral.U * 1.03) + 14;
+    const below = box.h / 2 + 14;
     place.style.transform = `translateY(${Math.round(Math.min(spiral.cy + below, spiral.H - 64))}px)`;
     place.classList.add('is-shown');
   };
   spiral.on('center', (i) => {
     $('counter').textContent = `${pad(i + 1)} / ${pad(N)}`;
+    paint(i);
     place.classList.remove('is-shown');
     clearTimeout(placeTimer);
     placeTimer = setTimeout(() => showPlace(i), 260);
   });
   window.addEventListener('resize', () => { clearTimeout(placeTimer); placeTimer = setTimeout(() => showPlace(spiral.centerIndex), 200); });
 
-  // mygtukas, kuris sustabdo visą savaiminį judesį (saulę ir sukimąsi)
+  // mygtukas, kuris sustabdo visą savaiminį judesį (fono mirguliavimą ir sukimąsi)
   const still = $('still');
   still.addEventListener('click', () => {
     const on = still.getAttribute('aria-pressed') !== 'true';
@@ -103,6 +105,7 @@ async function init() {
     still.setAttribute('aria-label', on ? 'Tęsti judesį' : 'Sustabdyti judesį');
     document.body.classList.toggle('is-still', on);
     spiral.setStill(on);
+    ambient.setPaused(on);
   });
   spiral.on('interact', () => $('hint').classList.add('is-gone'));
   spiral.on('open', (i) => viewer.open(i));
@@ -130,7 +133,7 @@ async function init() {
 
   document.body.classList.add('is-ready');
   if (/[?&](derinti|tune)\b/.test(location.search)) import('./tune.js').then((m) => m.mountTune(spiral));
-  window.__gallery = { spiral, viewer, sun, config: CONFIG };   // patogu derinti naršyklės konsolėje
+  window.__gallery = { spiral, viewer, ambient, config: CONFIG };   // patogu derinti naršyklės konsolėje
 }
 
 init();
