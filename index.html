@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0b0f">
+  <meta name="color-scheme" content="dark">
+  <title>Spiralės galerija</title>
+  <meta name="description" content="Interaktyvi nuotraukų galerija, išdėstyta spirale.">
+  <link rel="preload" href="fonts/megrim-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="photos.json" as="fetch" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="stage" id="stage">
+    <canvas class="spiral" id="spiral" tabindex="0" role="application"
+            aria-label="Spiralės galerija. Rodyklėmis keiskite nuotrauką, Enter – atidaryti per visą ekraną."></canvas>
+    <h1 class="brand" id="brand"></h1>
+    <p class="counter" id="counter" aria-hidden="true"></p>
+    <p class="hint" id="hint">Sukite, kad naršytumėte</p>
+    <p class="sr-only" id="live" aria-live="polite"></p>
+  </main>
+
+  <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Nuotraukos peržiūra" tabindex="-1" hidden>
+    <div class="viewer__backdrop"></div>
+    <div class="viewer__stage"></div>
+    <button class="viewer__btn viewer__close" type="button" aria-label="Uždaryti">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+    <button class="viewer__btn viewer__nav viewer__nav--prev" type="button" aria-label="Ankstesnė nuotrauka">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8"/></svg>
+    </button>
+    <button class="viewer__btn viewer__nav viewer__nav--next" type="button" aria-label="Kita nuotrauka">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8"/></svg>
+    </button>
+    <div class="viewer__caption" hidden>
+      <h2 class="viewer__title"></h2>
+      <p class="viewer__meta"></p>
+    </div>
+  </div>
+
+  <noscript><p class="noscript">Šiai galerijai reikia įjungto „JavaScript“.</p></noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

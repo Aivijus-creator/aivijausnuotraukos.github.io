@@ -1,0 +1,14 @@
+{
+  "name": "spirales-galerija",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Spiralės foto galerija – statinė svetainė",
+  "scripts": {
+    "photos": "node scripts/build-photos.mjs",
+    "start": "node scripts/serve.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
+  }
+}
