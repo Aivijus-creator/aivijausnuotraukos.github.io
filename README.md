@@ -1,8 +1,9 @@
 # aivijaus.raw
 
-Vieno puslapio interaktyvi nuotraukų galerija: nuotraukos sukasi spirale – ratuku, tempimu, rodyklėmis ar
-braukimu, o paspaudus atsidaro per visą ekraną. Fonas nusidažo centre esančios nuotraukos spalvomis ir
-lėtai mirguliuoja. Prie kiekvienos nuotraukos rodoma vieta, kur ji daryta. Svetainė visiškai statinė – be serverio ir duomenų bazės.
+Vieno puslapio interaktyvi galerija: nuotraukos – lyg seni atspaudai – išmėtytos ant begalinio
+viduramžiško medinio stalo tarp žvakių, plunksnų, raktų ir pergamento ritinių. Stalą galima
+tempti į visas puses ir priartinti, o paspaudus nuotrauką ji pakyla ir atsidaro peržiūroje.
+Svetainė visiškai statinė – be serverio ir duomenų bazės.
 
 ## Kaip pridėti ar pakeisti nuotraukas
 
@@ -37,9 +38,9 @@ Publikuojant per GitHub (žr. žemiau) 2 žingsnis atliekamas automatiškai – 
 | `location` | rekomenduojama | Vieta, kur nuotrauka daryta. Rodoma po centrine nuotrauka ir peržiūroje |
 | `title` | ne | Nuotraukos pavadinimas peržiūroje |
 | `year` | ne | Metai (rodomi šalia vietos) |
-| `description` | ne | Trumpas aprašas peržiūroje |
 
-- **Tvarka spiralėje = tvarka faile.** Pirmoji sąraše yra ta, kuri atidarius būna centre.
+- **Pirmosios sąraše nuotraukos dedamos arčiausiai stalo centro.** Pridėjus ar išėmus nuotraukų, stalas persiskirsto pats.
+- Kai nuotraukos baigiasi, jos ant stalo kartojasi, bet kitokia tvarka.
 - Jei kuris nors laukas tuščias, jis tiesiog nerodomas.
 - Norėdamas išimti nuotrauką, ištrink jos eilutę iš `photos.json` (ir failą iš `photos/`).
 - Po kiekvieno įrašo, išskyrus paskutinį, turi būti kablelis. Jei galerija nebeatsidaro, dažniausiai
@@ -55,34 +56,34 @@ npm run photos     # paruošia nuotraukas
 npm start          # http://localhost:8080
 ```
 
-## Spiralės derinimas
+## Nustatymai
 
-Visi nustatymai (tankumas, sukimosi kryptis, dydžiai, inercija, savaiminio sukimosi greitis ir kt.)
-yra faile **`js/config.js`** su paaiškinimais. Fono spalvų ryškumas ir judėjimo greitis – `js/ambient.js`.
-
-Jautrumas telefone keičiamas reikšmėmis `touchStep` (kuo didesnė, tuo ramiau), `touchSlop` (kiek pirštas
-gali krustelėti, kol tai dar laikoma prisilietimu), `touchInertia` ir `touchFlick`; touchpad – reikšme `trackpad`.
-Pirštu paspaudus spiralė prisisuka tik iki didesnių nuotraukų (`touchTapSize`), kad netyčia palietus
-mažą nuotrauką viskas nepradėtų suktis.
-
-Patogiausia derinti gyvai: atidaryk svetainę su **`?derinti`** adreso gale
-(pvz. `http://localhost:8080/?derinti`). Atsiras skydelis su slankikliais; kai rezultatas patinka,
-spausk „Kopijuoti nustatymus“ ir įklijuok reikšmes į `js/config.js`.
+Faile **`js/config.js`** su paaiškinimais: kiek nuotraukų matosi ekrane, jų dydis ir pasukimas,
+kiek daiktų tarp nuotraukų, priartinimo ribos, inercija, žvakių mirgėjimas, dulkės, įžangos trukmė.
+Išdėstymas visada toks pat (lankytojas gali grįžti į tą pačią vietą); pakeitus `seed` gaunamas kitas.
 
 ## Valdymas
 
 | Veiksmas | Rezultatas |
 |---|---|
-| Pelės ratukas / touchpad, tempimas pele, braukimas pirštu (aukštyn–žemyn arba ratu) | Spiralė sukasi |
-| ← → | Viena nuotrauka atgal / pirmyn |
-| Paspaudimas ant mažos nuotraukos | Spiralė prisisuka iki jos |
-| Paspaudimas ant centrinės nuotraukos, Enter | Peržiūra per visą ekraną |
+| Tempimas pele ar pirštu bet kuria kryptimi | Stalas juda; greitai brūkštelėjus dar paslysta |
+| Pelės ratukas / touchpad dviem pirštais | Stalas slenka |
+| Du pirštai, Ctrl + ratukas, + / − | Priartinti / atitolinti (50–200 %) |
+| Rodyklės | Stalas pajuda į tą pusę |
+| Tab / Shift + Tab, Enter | Pereiti tarp nuotraukų, atidaryti |
+| Kompasas kampe, 0 | Grįžti į stalo centrą |
+| Varpelis kampe | Įjungti / išjungti garsą (pagal nutylėjimą išjungtas) |
 | Peržiūroje: ← →, braukimas į šonus, rodyklės šonuose | Kita / ankstesnė nuotrauka |
-| Peržiūroje: Esc, ×, paspaudimas šalia nuotraukos, braukimas žemyn | Uždaryti |
-| Peržiūroje: du pirštai, dvigubas bakstelėjimas, Ctrl + ratukas | Priartinti |
-| Mygtukas apatiniame dešiniajame kampe | Sustabdyti / tęsti fono ir spiralės savaiminį judesį |
+| Peržiūroje: Esc, antspaudas su „X“, paspaudimas šalia, braukimas žemyn | Uždaryti |
+| Peržiūroje: ratukas, du pirštai, dvigubas bakstelėjimas | Priartinti detales |
 
-Kiekviena nuotrauka turi savo nuorodą: `…/#nuotrauka-12` iškart atidaro galeriją su 12-ąja nuotrauka centre.
+Kiekviena nuotrauka turi savo nuorodą: `…/#nuotrauka-12` atidaro stalą su 12-ąja nuotrauka peržiūroje.
+
+## Grafika ir licencijos
+
+Stalo tekstūra, daiktai ant stalo, popieriaus kraštai ir antspaudai nupiešti kodu (`js/texture.js`,
+`js/sprites.js`, `js/print.js`), garsai sugeneruojami naršyklėje (`js/sound.js`) – jokių svetimų
+paveikslėlių ar garso failų. Šriftai „UnifrakturMaguntia“ ir „EB Garamond“ – SIL Open Font License.
 
 ## Publikavimas per GitHub Pages
 
@@ -101,17 +102,21 @@ sumažintas versijas ir atnaujina svetainę – tai daro `.github/workflows/page
 ```
 index.html            puslapis
 css/style.css         išvaizda, šriftai
-js/config.js          spiralės ir judesio nustatymai
-js/spiral.js          spiralė (piešiama <canvas>), valdymas, inercija
-js/ambient.js         fonas: centrinės nuotraukos spalvos
-js/viewer.js          peržiūra per visą ekraną, priartinimas, gestai
+js/config.js          nustatymai
+js/table.js           stalas: išdėstymas, kamera, tempimas, artinimas, piešimas
+js/print.js           nuotraukos kaip seni atspaudai (kraštai, atspalvis, šešėlis)
+js/texture.js         ąžuolo stalo tekstūra
+js/sprites.js         daiktai ant stalo ir segtukai
+js/light.js           žvakių šviesa, vinjetė, dulkės
+js/viewer.js          nuotraukos peržiūra
+js/intro.js           įžanga
+js/sound.js           garsai
 js/main.js            paleidimas, klaviatūra, nuorodos
-js/tune.js            derinimo skydelis (?derinti)
 photos/               nuotraukų originalai
 photos.json           nuotraukų sąrašas ir aprašai
 optimized/            automatiškai sukuriamos sumažintos versijos (į git nekeliamos)
 scripts/              nuotraukų paruošimas ir vietinis serveris
-fonts/                šriftai „Megrim“ ir „Fraunces“ (SIL Open Font License)
+fonts/                šriftai
 ```
 
 Kol `photos.json` neįrašyta nuotraukos vieta (`location`), po ja nerodoma nieko.

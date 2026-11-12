@@ -1,15 +1,18 @@
 import { CONFIG } from './config.js';
+import { clipPolygon } from './print.js';
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const mod = (n, m) => ((n % m) + m) % m;
 const EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';       // stiprus ease-out
 const T = (x, y, s = 1, rot = 0) => `translate3d(${x}px, ${y}px, 0) rotate(${rot}rad) scale(${s})`;
 
-/* Peržiūra per visą ekraną: nuotrauka išsiplečia iš savo vietos spiralėje ir į ją sugrįžta. */
+/* Peržiūra: nuotrauka pakyla nuo stalo, atskrenda į centrą išsitiesindama, o uždarius nusileidžia atgal tuo pačiu kampu. */
 export class Viewer {
-  constructor(root, spiral, items, { reducedMotion = false } = {}) {
+  constructor(root, table, items, { reducedMotion = false, sound = null } = {}) {
     this.root = root;
-    this.spiral = spiral;
+    this.table = table;
+    this.sound = sound;
+    this.handlers = {};
     this.items = items;
     this.reduced = reducedMotion;
     this.stage = root.querySelector('.viewer__stage');
@@ -17,7 +20,7 @@ export class Viewer {
     this.caption = root.querySelector('.viewer__caption');
     this.titleEl = root.querySelector('.viewer__title');
     this.metaEl = root.querySelector('.viewer__meta');
-    this.descEl = root.querySelector('.viewer__desc');
+    this.cell = null;
     this.isOpen = false;
     this.busy = false;
     this.index = -1;
@@ -43,8 +46,19 @@ export class Viewer {
     window.addEventListener('resize', () => this.onResize());
   }
 
+  on(n, f) { (this.handlers[n] ||= []).push(f); return this; }
+  emit(n, ...a) { for (const f of this.handlers[n] || []) f(...a); }
+
+  /* Popieriaus (nuotrauka + šviesus kraštas) proporcijos. */
+  paperAspect(item) {
+    const a = item.aspect, m = CONFIG.print.margin;
+    const iw = a >= 1 ? 1 : a, ih = a >= 1 ? 1 / a : 1;
+    return (iw * (1 + 2 * m)) / (ih + 2 * m * iw);
+  }
+
   /* Didžiausias stačiakampis, kuriame nuotrauka telpa visa, neapkarpyta. */
   fit(item) {
+    const aspect = this.paperAspect(item);
     const vw = window.innerWidth, vh = window.innerHeight;
     const small = vw <= 640;
     const hasCaption = !this.caption.hidden;
@@ -52,8 +66,8 @@ export class Viewer {
     const padTop = small ? 62 : 34;
     const padBottom = hasCaption ? Math.max(small ? 62 : 34, this.caption.offsetHeight + (small ? 34 : 46)) : (small ? 62 : 34);
     const bw = vw - padX * 2, bh = vh - padTop - padBottom;
-    let w = bw, h = w / item.aspect;
-    if (h > bh) { h = bh; w = h * item.aspect; }
+    let w = bw, h = w / aspect;
+    if (h > bh) { h = bh; w = h * aspect; }
     return { w, h, cx: vw / 2, cy: padTop + bh / 2 };
   }
 
@@ -61,25 +75,28 @@ export class Viewer {
     const meta = [item.location, item.year].filter(Boolean).join(' · ');   // vieta ir metai
     this.titleEl.textContent = item.title;
     this.metaEl.textContent = meta;
-    this.descEl.textContent = item.description;
-    this.caption.hidden = !(item.title || meta || item.description);   // jei nieko neįrašyta – nerodoma nieko
+    this.caption.hidden = !(item.title || meta);     // jei nieko neįrašyta – pergamento skiautė nerodoma
     this.caption.classList.remove('is-shown');
     requestAnimationFrame(() => this.caption.classList.add('is-shown'));
   }
 
   makeImg(item, box) {
-    const el = document.createElement('div');      // nuotrauka + rėmelis juda kartu
+    const el = document.createElement('div');      // atspaudas: popierius su apdriskusiais kraštais + nuotrauka
     el.className = 'viewer__img';
+    const sheet = document.createElement('div');
+    sheet.className = 'viewer__sheet';
     const img = document.createElement('img');
     img.className = 'viewer__pic';
     img.alt = item.alt;
     img.draggable = false;
     img.decoding = 'async';
-    el.append(img);
+    sheet.append(img);
+    el.append(sheet);
     el.pic = img;
+    el.sheet = sheet;
     el.item = item;
     this.place(el, box);
-    img.src = this.spiral.bestSrc(item.index);
+    img.src = this.table.bestSrc(item.index);
     const full = new Image();                        // pilna kokybė kraunama tik čia
     full.decoding = 'async';
     full.src = item.urls.lg;
@@ -90,44 +107,43 @@ export class Viewer {
 
   place(el, box) {
     Object.assign(el.style, { left: `${box.cx - box.w / 2}px`, top: `${box.cy - box.h / 2}px`, width: `${box.w}px`, height: `${box.h}px` });
-    // baltas lapas: nuotrauka truputį mažesnė už lapą
-    el.style.padding = CONFIG.paper.enabled ? `${Math.min(box.w, box.h) * CONFIG.paper.margin}px` : '0';
+    const imgW = box.w / (1 + 2 * CONFIG.print.margin);
+    el.sheet.style.padding = `${imgW * CONFIG.print.margin}px`;
+    el.sheet.style.clipPath = clipPolygon(el.item.index + 1, box.w, box.h);
   }
 
-  open(index) {
-    if (this.isOpen || this.busy) return;
-    const sp = this.spiral;
-    if (Math.abs(sp.posOf(index)) > 0.02 || sp.target != null) {   // pirma prisukame prie centro
-      sp.goTo(index, true);
-      sp.once('settle', () => this.open(index));
-      return;
-    }
+  open(cell) {
+    if (this.isOpen || this.busy || !cell) return;
+    const tb = this.table;
     this.busy = true;
     this.isOpen = true;
-    this.index = index;
-    sp.setPaused(true);
-    const item = this.items[index];
+    this.cell = cell;
+    this.index = cell.index;
+    tb.setPaused(true);
+    const item = this.items[cell.index];
     this.root.hidden = false;
     this.setCaption(item);
     const box = this.box = this.fit(item);
     const img = this.img = this.makeImg(item, box);
-    const from = sp.rectOf(index);
+    const from = tb.instanceRect(cell);
     this.resetZoom();
     this.lastFocus = document.activeElement;
+    this.sound?.paper();
+    this.emit('open', cell.index);
 
     const start = () => {
       if (this.reduced) img.style.opacity = '0';
       else img.style.transform = T(from.cx - box.cx, from.cy - box.cy, from.w / box.w, from.rot);
       this.stage.append(img);
-      sp.setHidden(index);
-      sp.render();
+      tb.setHidden(cell.key);
+      tb.render();
       void img.offsetWidth;
       this.root.classList.add('is-open');
-      img.style.transition = this.reduced ? 'opacity 200ms ease' : `transform 460ms ${EASE}`;
+      img.style.transition = this.reduced ? 'opacity 200ms ease' : `transform 520ms ${EASE}`;
       img.style.transform = T(0, 0);
       img.style.opacity = '1';
       this.root.focus({ preventScroll: true });
-      setTimeout(() => { this.busy = false; }, this.reduced ? 200 : 300);
+      setTimeout(() => { this.busy = false; }, this.reduced ? 200 : 320);
     };
     if (img.pic.decode) img.pic.decode().then(start, start); else start();
   }
@@ -135,37 +151,42 @@ export class Viewer {
   close() {
     if (!this.isOpen || this.busy) return;
     this.busy = true;
-    const sp = this.spiral, img = this.img, box = this.box;
-    const to = sp.rectOf(this.index);
-    const ms = this.reduced ? 160 : 340;            // uždarymas greitesnis už atidarymą
+    const tb = this.table, img = this.img, box = this.box;
+    const to = tb.instanceRect(this.cell);
+    const ms = this.reduced ? 160 : 380;            // uždarymas greitesnis už atidarymą
     this.root.classList.remove('is-open', 'is-dragging');
     this.backdrop.style.opacity = '';
     this.backdrop.style.transition = '';
     if (this.reduced) { img.style.transition = `opacity ${ms}ms ease`; img.style.opacity = '0'; }
     else {
-      img.style.transition = `transform ${ms}ms ${EASE}, border-radius ${ms}ms ease`;
+      img.style.transition = `transform ${ms}ms ${EASE}`;
       img.style.transform = T(to.cx - box.cx, to.cy - box.cy, to.w / box.w, to.rot);
     }
     setTimeout(() => {
-      sp.setHidden(-1);
-      sp.render();
+      tb.setHidden(null);
+      tb.render();
+      this.sound?.thud();
       requestAnimationFrame(() => {
         this.stage.replaceChildren();
         this.root.hidden = true;
         this.isOpen = false; this.busy = false; this.img = null;
-        sp.setPaused(false);
-        (this.lastFocus && this.lastFocus.focus ? this.lastFocus : sp.canvas).focus({ preventScroll: true });
+        tb.setPaused(false);
+        this.emit('close', this.index);
+        (this.lastFocus && this.lastFocus.focus ? this.lastFocus : tb.canvas).focus({ preventScroll: true });
       });
     }, ms + 20);
   }
 
   go(dir, fromX = 0) {
     if (!this.isOpen || this.busy || this.items.length < 2) return;
-    const sp = this.spiral, old = this.img;
+    const tb = this.table, old = this.img;
     const next = mod(this.index + dir, this.items.length);
     this.index = next;
-    sp.step(dir);
-    sp.setHidden(next);
+    const cell = this.cell = tb.nearestInstance(next);  // stalas už nugaros nuslenka prie tos nuotraukos
+    tb.panTo(cell);
+    tb.setHidden(cell.key);
+    this.sound?.paper();
+    this.emit('open', next);
     const item = this.items[next];
     this.setCaption(item);
     const box = this.box = this.fit(item);
@@ -334,14 +355,9 @@ export class Viewer {
   onWheel(e) {
     e.preventDefault();
     if (!this.isOpen || this.busy) return;
-    if (e.ctrlKey) {                                  // touchpad „pinch“ arba Ctrl + ratukas
-      this.zoomAt(e.clientX, e.clientY, this.z.s * Math.exp(-e.deltaY * 0.012));
-      this.apply();
-      return;
-    }
-    if (this.z.s > 1.02) { this.z.x -= e.deltaX; this.z.y -= e.deltaY; this.clampPan(); this.apply(); return; }
-    const d = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-    const now = performance.now();
-    if (Math.abs(d) > 24 && now - this.lastWheelNav > 480) { this.lastWheelNav = now; this.go(d > 0 ? 1 : -1); }
+    let dy = e.deltaY;
+    if (e.deltaMode === 1) dy *= 33;
+    this.zoomAt(e.clientX, e.clientY, this.z.s * Math.exp(-dy * (e.ctrlKey ? 0.012 : 0.0025)));   // ratukas – priartinti / atitolinti
+    this.apply();
   }
 }
