@@ -26,16 +26,10 @@ export const CONFIG = {
     farBlur: 0.85,       // tolimiausių nuotraukų išliejimas (0–1)
     rotationFollow: 1,   // kiek nuotraukos pasisuka pagal spiralės liniją (0 = visos tiesios)
   },
-  frame: {
-    enabled: true,       // baltas rėmelis ir raštai ant nuotraukų
-    band: 0.028,         // rašto juostos plotis (trumpesnės nuotraukos kraštinės dalis)
-    minBand: 6,          // …bet ne siauresnė kaip (px)
-    maxBand: 16,         // …ir ne platesnė kaip (px)
-    border: 0.17,        // ištisinio rėmelio storis (juostos pločio dalimis)
-    line: 0.07,          // rašto linijų storis (juostos pločio dalimis)
-    opacity: 0.9,        // ryškumas
-    borderMinSize: 24,   // spiralėje rėmelis – nuotraukoms nuo tokio dydžio (px)
-    minSize: 70,         // …o raštas – nuo tokio
+  paper: {
+    enabled: true,       // nuotrauka uždėta ant balto lapo
+    margin: 0.035,       // kiek lapas kyšo už nuotraukos (trumpesnės kraštinės dalis)
+    color: '#fbfaf7',    // lapo spalva
   },
   motion: {
     inertia: 0.42,       // inercijos trukmė sekundėmis – kuo daugiau, tuo „sunkesnė“ spiralė

@@ -1,5 +1,4 @@
 import { CONFIG } from './config.js';
-import { borderPath, patternPath, patternFor, frameSizes } from './frame.js';
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const mod = (n, m) => ((n % m) + m) % m;
@@ -79,12 +78,6 @@ export class Viewer {
     el.append(img);
     el.pic = img;
     el.item = item;
-    if (CONFIG.frame.enabled) {
-      el.frame = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      el.frame.setAttribute('class', 'viewer__frame');
-      el.frame.setAttribute('aria-hidden', 'true');
-      el.append(el.frame);
-    }
     this.place(el, box);
     img.src = this.spiral.bestSrc(item.index);
     const full = new Image();                        // pilna kokybė kraunama tik čia
@@ -97,13 +90,8 @@ export class Viewer {
 
   place(el, box) {
     Object.assign(el.style, { left: `${box.cx - box.w / 2}px`, top: `${box.cy - box.h / 2}px`, width: `${box.w}px`, height: `${box.h}px` });
-    if (el.frame) {
-      const { w, h } = box, fr = CONFIG.frame, sz = frameSizes(w, h);
-      el.frame.setAttribute('viewBox', `${-w / 2} ${-h / 2} ${w} ${h}`);
-      el.frame.innerHTML =
-        `<path d="${borderPath(w, h, 6)}" fill="none" stroke="#fff" stroke-opacity="${fr.opacity}" stroke-width="${sz.border}"/>` +
-        `<path d="${patternPath(w, h, patternFor(el.item))}" fill="none" stroke="#fff" stroke-opacity="${fr.opacity}" stroke-width="${sz.line}" stroke-linejoin="miter"/>`;
-    }
+    // baltas lapas: nuotrauka truputį mažesnė už lapą
+    el.style.padding = CONFIG.paper.enabled ? `${Math.min(box.w, box.h) * CONFIG.paper.margin}px` : '0';
   }
 
   open(index) {

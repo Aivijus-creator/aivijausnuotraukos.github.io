@@ -38,7 +38,6 @@ Publikuojant per GitHub (žr. žemiau) 2 žingsnis atliekamas automatiškai – 
 | `title` | ne | Nuotraukos pavadinimas peržiūroje |
 | `year` | ne | Metai (rodomi šalia vietos) |
 | `description` | ne | Trumpas aprašas peržiūroje |
-| `frame` | ne | Rėmelio raštas: `meandras`, `bangos`, `spiralės`, `dantukai`, `zigzagas`, `rombai`, `karoliai`, `arkos`, `kryžiukai`, `žvynai`. Jei nenurodyta – parenkamas pagal eilę, kad gretimos nuotraukos turėtų skirtingus |
 
 - **Tvarka spiralėje = tvarka faile.** Pirmoji sąraše yra ta, kuri atidarius būna centre.
 - Jei kuris nors laukas tuščias, jis tiesiog nerodomas.

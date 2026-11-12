@@ -47,7 +47,6 @@ async function init() {
       const opt = (tier) => `optimized/${tier}/${encodePath(webp(p.file))}`;
       return {
         index, file: p.file, title, location, description, year,
-        frame: p.frame ? String(p.frame).trim() : '',
         alt: [title, location, year].filter(Boolean).join(', ') || description || `Nuotrauka ${index + 1}`,
         aspect: meta ? meta.w / meta.h : 1.5,
         known: !!meta,

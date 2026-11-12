@@ -1,6 +1,5 @@
 import { CONFIG } from './config.js';
 import { extractPalette } from './ambient.js';
-import { borderPath, patternPath, patternFor, frameSizes } from './frame.js';
 
 const DEG = Math.PI / 180;
 const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
@@ -623,26 +622,21 @@ export class Spiral {
       ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
     }
     if (src && fade > 0) {
-      if (d.L >= 26) { this.roundRect(w, h, radius); ctx.clip(); }
+      let pw = w, ph = h;
+      if (CONFIG.paper.enabled) {   // baltas lapas, ant kurio uždėta nuotrauka
+        const pad = Math.min(w, h) * CONFIG.paper.margin;
+        ctx.globalAlpha = alpha * fade;
+        ctx.fillStyle = CONFIG.paper.color;
+        this.roundRect(w, h, radius);
+        ctx.fill();
+        pw = w - pad * 2; ph = h - pad * 2;
+      }
+      if (d.L >= 26) { this.roundRect(pw, ph, Math.max(0, radius * 0.4)); ctx.clip(); }
       ctx.globalAlpha = alpha * fade;
-      ctx.drawImage(src, -w / 2, -h / 2, w, h);
+      ctx.drawImage(src, -pw / 2, -ph / 2, pw, ph);
       if (d.blur > 0.03 && item.soft) {
         ctx.globalAlpha = alpha * fade * d.blur;
-        ctx.drawImage(item.soft, -w / 2, -h / 2, w, h);
-      }
-      const fr = CONFIG.frame, mn = Math.min(w, h);
-      if (fr.enabled && mn >= fr.borderMinSize) {        // baltas rėmelis ir raštas
-        const sz = frameSizes(w, h);
-        ctx.strokeStyle = '#fff';
-        ctx.globalAlpha = alpha * fade * fr.opacity * clamp((mn - fr.borderMinSize) / 20);
-        ctx.lineWidth = sz.border;
-        ctx.stroke(new Path2D(borderPath(w, h, radius)));
-        if (mn >= fr.minSize) {
-          ctx.globalAlpha = alpha * fade * fr.opacity * clamp((mn - fr.minSize) / 40);
-          ctx.lineWidth = sz.line;
-          ctx.lineJoin = 'miter';
-          ctx.stroke(new Path2D(patternPath(w, h, item.pattern || (item.pattern = patternFor(item)))));
-        }
+        ctx.drawImage(item.soft, -pw / 2, -ph / 2, pw, ph);
       }
     }
     ctx.restore();
