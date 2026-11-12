@@ -1,6 +1,6 @@
 import { CONFIG } from './config.js';
 import { extractPalette } from './ambient.js';
-import { meanderPath, frameBand } from './frame.js';
+import { borderPath, patternPath, patternFor, frameSizes } from './frame.js';
 
 const DEG = Math.PI / 180;
 const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
@@ -630,14 +630,19 @@ export class Spiral {
         ctx.globalAlpha = alpha * fade * d.blur;
         ctx.drawImage(item.soft, -w / 2, -h / 2, w, h);
       }
-      const fr = CONFIG.frame;
-      if (fr.enabled && Math.min(w, h) >= fr.minSize) {   // baltas meandro rėmelis
-        const k = clamp((Math.min(w, h) - fr.minSize) / 40);
-        ctx.globalAlpha = alpha * fade * fr.opacity * k;
+      const fr = CONFIG.frame, mn = Math.min(w, h);
+      if (fr.enabled && mn >= fr.borderMinSize) {        // baltas rėmelis ir raštas
+        const sz = frameSizes(w, h);
         ctx.strokeStyle = '#fff';
-        ctx.lineWidth = Math.max(0.6, frameBand(w, h) * fr.line);
-        ctx.lineJoin = 'miter';
-        ctx.stroke(new Path2D(meanderPath(w, h)));
+        ctx.globalAlpha = alpha * fade * fr.opacity * clamp((mn - fr.borderMinSize) / 20);
+        ctx.lineWidth = sz.border;
+        ctx.stroke(new Path2D(borderPath(w, h, radius)));
+        if (mn >= fr.minSize) {
+          ctx.globalAlpha = alpha * fade * fr.opacity * clamp((mn - fr.minSize) / 40);
+          ctx.lineWidth = sz.line;
+          ctx.lineJoin = 'miter';
+          ctx.stroke(new Path2D(patternPath(w, h, item.pattern || (item.pattern = patternFor(item)))));
+        }
       }
     }
     ctx.restore();

@@ -27,14 +27,15 @@ export const CONFIG = {
     rotationFollow: 1,   // kiek nuotraukos pasisuka pagal spiralės liniją (0 = visos tiesios)
   },
   frame: {
-    enabled: true,       // baltas meandro rėmelis ant nuotraukų
-    band: 0.03,          // rašto juostos plotis (trumpesnės nuotraukos kraštinės dalis)
+    enabled: true,       // baltas rėmelis ir raštai ant nuotraukų
+    band: 0.028,         // rašto juostos plotis (trumpesnės nuotraukos kraštinės dalis)
     minBand: 6,          // …bet ne siauresnė kaip (px)
-    maxBand: 18,         // …ir ne platesnė kaip (px)
-    inset: 0.7,          // atstumas nuo krašto (juostos pločio dalimis)
-    line: 0.07,          // linijos storis (juostos pločio dalimis)
-    opacity: 0.85,       // ryškumas
-    minSize: 70,         // spiralėje rėmelis piešiamas tik nuotraukoms nuo tokio dydžio (px)
+    maxBand: 16,         // …ir ne platesnė kaip (px)
+    border: 0.17,        // ištisinio rėmelio storis (juostos pločio dalimis)
+    line: 0.07,          // rašto linijų storis (juostos pločio dalimis)
+    opacity: 0.9,        // ryškumas
+    borderMinSize: 24,   // spiralėje rėmelis – nuotraukoms nuo tokio dydžio (px)
+    minSize: 70,         // …o raštas – nuo tokio
   },
   motion: {
     inertia: 0.42,       // inercijos trukmė sekundėmis – kuo daugiau, tuo „sunkesnė“ spiralė
