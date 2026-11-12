@@ -1,11 +1,12 @@
-import { Spiral } from './spiral.js';
-import { Viewer } from './viewer.js';
 import { CONFIG } from './config.js';
-import { mountAmbient } from './ambient.js';
+import { Table } from './table.js';
+import { Light } from './light.js';
+import { Viewer } from './viewer.js';
+import { Sound } from './sound.js';
+import { playIntro } from './intro.js';
 
 const $ = (id) => document.getElementById(id);
-const mod = (n, m) => ((n % m) + m) % m;
-const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const getJSON = async (url) => {
   const res = await fetch(url, { cache: 'no-cache' });
@@ -16,16 +17,11 @@ const encodePath = (file) => file.split('/').map(encodeURIComponent).join('/');
 const webp = (file) => file.replace(/\.[^.]+$/, '') + '.webp';
 const hashIndex = (count) => {
   const m = /^#nuotrauka-(\d+)$/.exec(location.hash);
-  if (!m) return null;
-  const n = Number(m[1]);
+  const n = m ? Number(m[1]) : 0;
   return n >= 1 && n <= count ? n - 1 : null;
 };
-
 function message(text) {
-  const p = document.createElement('p');
-  p.className = 'message';
-  p.textContent = text;
-  $('stage').append(p);
+  const p = document.createElement('p'); p.className = 'message'; p.textContent = text; $('stage').append(p);
 }
 
 async function init() {
@@ -34,7 +30,6 @@ async function init() {
   catch (err) { console.error(err); message('Nepavyko įkelti nuotraukų sąrašo (photos.json).'); return; }
   // optimized/manifest.json sukuria „npm run photos“. Jei jo nėra – rodomi originalai.
   const manifest = await getJSON('optimized/manifest.json').catch(() => null);
-
   const raw = Array.isArray(list) ? list : list.photos || [];
   const items = raw
     .map((p) => (typeof p === 'string' ? { file: p } : p))
@@ -42,98 +37,92 @@ async function init() {
     .map((p, index) => {
       const meta = manifest && manifest[p.file];
       const orig = 'photos/' + encodePath(p.file);
-      const title = (p.title || '').trim(), description = (p.description || '').trim(), year = p.year ? String(p.year).trim() : '';
-      const location = (p.location || '').trim();
       const opt = (tier) => `optimized/${tier}/${encodePath(webp(p.file))}`;
+      const title = (p.title || '').trim(), location = (p.location || '').trim(), year = p.year ? String(p.year).trim() : '';
       return {
-        index, file: p.file, title, location, description, year,
-        alt: [title, location, year].filter(Boolean).join(', ') || description || `Nuotrauka ${index + 1}`,
+        index, file: p.file, title, location, year,
+        alt: [title, location, year].filter(Boolean).join(', ') || `Nuotrauka ${index + 1}`,
         aspect: meta ? meta.w / meta.h : 1.5,
-        known: !!meta,
-        color: (meta && meta.color) || '#3c3c48',
         orig,
         urls: meta ? { sm: opt('sm'), md: opt('md'), lg: opt('lg') } : { sm: orig, md: orig, lg: orig },
       };
     });
 
-  const title = (!Array.isArray(list) && list.title) || 'aivijaus.raw';
-  document.title = title;
-  $('brand').textContent = title;
-  if (!items.length) { message('Galerijoje kol kas nėra nuotraukų.'); document.body.classList.add('is-ready'); return; }
+  // šriftai reikalingi pavadinimui ir antspaudui ant stalo
+  await Promise.race([
+    Promise.all([document.fonts.load('40px "UnifrakturMaguntia"'), document.fonts.load('600 38px "EB Garamond"')]),
+    new Promise((r) => setTimeout(r, 1500)),
+  ]).catch(() => {});
 
   const N = items.length;
-  const pad = (n) => String(n).padStart(String(N).length < 2 ? 2 : String(N).length, '0');
+  const table = new Table($('table'), items, { reducedMotion: reduced });
+  const light = new Light($('shade'), $('glow'), table, { reducedMotion: reduced });
+  const sound = new Sound();
+  const viewer = new Viewer($('viewer'), table, items, { reducedMotion: reduced, sound });
+  const live = $('live');
+  if (!N) { message('Ant stalo kol kas nėra nuotraukų.'); }
+
+  // nuoroda į nuotrauką: …/#nuotrauka-12
+  const base = location.pathname + location.search;
+  viewer.on('open', (i) => { history.replaceState(null, '', `#nuotrauka-${i + 1}`); live.textContent = `Atidaryta: ${items[i].alt}`; });
+  viewer.on('close', () => { history.replaceState(null, '', base); });
+  table.on('open', (cell) => viewer.open(cell));
+
   const start = hashIndex(N);
-  const spiral = new Spiral($('spiral'), items, { reducedMotion: reducedQuery.matches, startIndex: start ?? 0 });
-  const viewer = new Viewer($('viewer'), spiral, items, { reducedMotion: reducedQuery.matches });
-  reducedQuery.addEventListener('change', (e) => { spiral.reduced = viewer.reduced = e.matches; });
+  if (start != null) { const c = table.homeCell(start); table.cam.x = c.x; table.cam.y = c.y; }
+  document.body.classList.remove('is-loading');
+  await playIntro({ overlay: $('intro'), brand: $('brand'), light, skip: reduced || start != null });
+  if (start != null) requestAnimationFrame(() => viewer.open(table.homeCell(start)));
 
-  // fonas nusidažo centrinės nuotraukos spalvomis ir lėtai mirguliuoja
-  const ambient = mountAmbient($('ambient'), { reducedMotion: reducedQuery.matches });
-  const hexToRgb = (hex) => { const n = parseInt(hex.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
-  const paint = (i) => ambient.setPalette(items[i].palette || [hexToRgb(items[i].color)]);
-  spiral.on('palette', (item) => { if (item.index === spiral.centerIndex) paint(item.index); });
-  spiral.on('spin', (travel) => ambient.spin(travel * 0.35 * CONFIG.spiral.direction));
-  reducedQuery.addEventListener('change', (e) => ambient.setReduced(e.matches));
-
-  // vieta po centrine nuotrauka: sukant išnyksta, sustojus – parodoma
-  const place = $('place'), placeText = $('place-text');
-  let placeTimer = 0;
-  const showPlace = (i) => {
-    const item = items[i];
-    placeText.textContent = item.location;
-    place.classList.toggle('is-empty', !item.location);
-    const box = spiral.centerBox(item.aspect);
-    const below = box.h / 2 + 14;
-    place.style.transform = `translateY(${Math.round(Math.min(spiral.cy + below, spiral.H - 64))}px)`;
-    place.classList.add('is-shown');
-  };
-  spiral.on('center', (i) => {
-    $('counter').textContent = `${pad(i + 1)} / ${pad(N)}`;
-    paint(i);
-    place.classList.remove('is-shown');
-    clearTimeout(placeTimer);
-    placeTimer = setTimeout(() => showPlace(i), 260);
-  });
-  window.addEventListener('resize', () => { clearTimeout(placeTimer); placeTimer = setTimeout(() => showPlace(spiral.centerIndex), 200); });
-
-  // mygtukas, kuris sustabdo visą savaiminį judesį (fono mirguliavimą ir sukimąsi)
-  const still = $('still');
-  still.addEventListener('click', () => {
-    const on = still.getAttribute('aria-pressed') !== 'true';
-    still.setAttribute('aria-pressed', String(on));
-    still.setAttribute('aria-label', on ? 'Tęsti judesį' : 'Sustabdyti judesį');
-    document.body.classList.toggle('is-still', on);
-    spiral.setStill(on);
-    ambient.setPaused(on);
-  });
-  spiral.on('interact', () => $('hint').classList.add('is-gone'));
-  spiral.on('open', (i) => viewer.open(i));
-  spiral.on('settle', (i) => {
-    $('live').textContent = `Nuotrauka ${i + 1} iš ${N}: ${items[i].alt}`;
-    if (spiral.interacted) history.replaceState(null, '', `#nuotrauka-${i + 1}`);   // nuoroda dalinimuisi
-  });
-  window.addEventListener('hashchange', () => {
+  addEventListener('hashchange', () => {
     const i = hashIndex(N);
-    if (i != null && i !== mod(Math.round(spiral.s), N)) spiral.goTo(i, true);
+    if (i == null || (viewer.isOpen && viewer.index === i)) return;
+    if (viewer.isOpen) viewer.close();
+    const c = table.nearestInstance(i); table.panTo(c);
+    setTimeout(() => viewer.open(c), 650);
   });
 
-  window.addEventListener('keydown', (e) => {
-    if (e.altKey || e.ctrlKey || e.metaKey) return;
+  $('home').addEventListener('click', () => table.home());
+  $('sound').addEventListener('click', (e) => {
+    const on = sound.toggle();
+    e.currentTarget.setAttribute('aria-pressed', String(on));
+    e.currentTarget.setAttribute('aria-label', on ? 'Išjungti garsą' : 'Įjungti garsą');
+  });
+
+  // klaviatūra
+  let focusIdx = -1;
+  const focusPhoto = (i) => {
+    focusIdx = i;
+    if (i < 0) { table.setFocus(null); return; }
+    const c = table.nearestInstance(i);
+    table.panTo(c, 7); table.setFocus(c.key);
+    live.textContent = `${i + 1} iš ${N}: ${items[i].alt}`;
+  };
+  addEventListener('keydown', (e) => {
+    if (e.altKey || e.metaKey) return;
     if (viewer.isOpen) { viewer.onKey(e); return; }
-    if (e.target instanceof HTMLElement && e.target.closest('.tune')) return;
-    switch (e.key) {
-      case 'ArrowRight': case 'ArrowDown': e.preventDefault(); spiral.step(1); break;
-      case 'ArrowLeft': case 'ArrowUp': e.preventDefault(); spiral.step(-1); break;
-      case 'Home': e.preventDefault(); spiral.goTo(0, true); break;
-      case 'End': e.preventDefault(); spiral.goTo(N - 1, true); break;
-      case 'Enter': case ' ': e.preventDefault(); viewer.open(mod(Math.round(spiral.target ?? spiral.s), N)); break;
+    const onTable = document.activeElement === table.canvas || document.activeElement === document.body;
+    if (e.key === 'Tab' && onTable && N) {
+      const next = focusIdx + (e.shiftKey ? -1 : 1);
+      if (next < 0 || next >= N) { focusPhoto(-1); return; }   // leidžiame Tab pereiti prie mygtukų
+      e.preventDefault(); table.canvas.focus({ preventScroll: true }); focusPhoto(next);
+      return;
     }
+    if (e.ctrlKey && !['+', '=', '-'].includes(e.key)) return;
+    const mv = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+    if (mv) { e.preventDefault(); table.nudge(mv[0], mv[1]); return; }
+    if (e.key === '+' || e.key === '=') { e.preventDefault(); table.zoomBy(1.25); }
+    else if (e.key === '-' || e.key === '_') { e.preventDefault(); table.zoomBy(0.8); }
+    else if (e.key === '0' || e.key === 'Home') { e.preventDefault(); table.home(); }
+    else if ((e.key === 'Enter' || e.key === ' ') && onTable && N) {
+      e.preventDefault();
+      const c = table.focusKey ? table.drawn.find((d) => d.key === table.focusKey) : table.hit(innerWidth / 2, innerHeight / 2) || table.nearestInstance(0);
+      viewer.open(c || table.nearestInstance(Math.max(0, focusIdx)));
+    } else if (e.key === 'Escape') focusPhoto(-1);
   });
+  table.canvas.addEventListener('pointerdown', () => { if (focusIdx >= 0) focusPhoto(-1); });
 
-  document.body.classList.add('is-ready');
-  if (/[?&](derinti|tune)\b/.test(location.search)) import('./tune.js').then((m) => m.mountTune(spiral));
-  window.__gallery = { spiral, viewer, ambient, config: CONFIG };   // patogu derinti naršyklės konsolėje
+  window.__gallery = { table, viewer, light, sound, config: CONFIG };
 }
 
 init();

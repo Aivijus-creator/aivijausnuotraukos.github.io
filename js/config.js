@@ -1,47 +1,33 @@
 /*
-  Spiralės nustatymai. Visus skaičius galima keisti čia arba gyvai derinimo
-  skydelyje – atidaryk svetainę su ?derinti adreso gale (pvz. …/index.html?derinti).
+  Stalo nustatymai. Skaičius galima keisti čia – išdėstymas visada lieka toks pat,
+  kol nesikeičia nuotraukų sąrašas ir šie nustatymai.
 */
 export const CONFIG = {
-  spiral: {
-    direction: 1,        // sukimosi kryptis: 1 – pagal laikrodžio rodyklę, -1 – prieš
-    turns: 1.3,          // daugiausia apsisukimų (kai nuotraukų mažai, vija trumpesnė)
-    spacing: 1.35,       // tankumas: tarpas tarp nuotraukų (1 = liečiasi, 2 = retai)
-    visible: 40,         // daugiausia nuotraukų vijoje vienu metu
-    minTurns: 0.72,      // kai nuotraukų mažai: mažiausiai tiek rato vija vis tiek apjuosia
-    maxGap: 1.6,         // …ir kiek kartų tam galima padidinti tarpus tarp nuotraukų
-    startAngle: -90,     // kur prasideda vija (laipsniais; -90 = virš centro, 0 = dešinėje)
-    innerRadius: 0.39,   // vijos pradžios atstumas nuo centro (ekrano dalis)
-    outerRadius: 0.545,  // vijos galo atstumas nuo centro (0.5 = ekrano kraštas)
-    radiusCurve: 1,      // 1 = Archimedo spiralė (tolygu); >1 – ilgiau laikosi arti centro
-    stretch: 1,          // kiek spiralė prisitaiko prie ekrano proporcijų (0 = apskrita, 1 = pilnai)
-    centerSize: 0.64,    // centrinės nuotraukos aukštis (ekrano aukščio dalis)
-    centerMaxWidth: 0.86,// centrinės nuotraukos didžiausias plotis (ekrano pločio dalis)
-    nearSize: 0.16,      // arčiausiai centro esančių nuotraukų dydis
-    farSize: 0.04,       // tolimiausių nuotraukų dydis (ekrano aukščio dalis)
-    sizeCurve: 0.7,      // dydžių kreivė: <1 – nuotraukos greičiau mažėja prie centro
-    nearOpacity: 0.95,   // artimiausių nuotraukų ryškumas
-    farOpacity: 0.16,    // tolimiausių nuotraukų permatomumas
-    opacityCurve: 0.8,
-    farBlur: 0.85,       // tolimiausių nuotraukų išliejimas (0–1)
-    rotationFollow: 1,   // kiek nuotraukos pasisuka pagal spiralės liniją (0 = visos tiesios)
+  table: {
+    seed: 1207,          // išdėstymo „sėkla“: pakeitus gaunamas kitas, bet vėl pastovus išdėstymas
+    perScreen: 10,       // kiek nuotraukų matosi kompiuterio ekrane (kai priartinimas 100 %)
+    perScreenPhone: 4,   // …ir telefone
+    photoSize: 0.66,      // nuotraukos ilgoji kraštinė stalo langelio dalimis
+    sizeJitter: 0.2,     // dydžių skirtumai: 0.2 = nuo 80 % iki 120 %
+    maxRotation: 8,      // didžiausias pasukimas laipsniais (abiem kryptimis)
+    jitter: 0.11,        // kiek nuotrauka gali nukrypti nuo langelio centro
+    stillLife: 9,        // kas kelintas langelis vietoje nuotraukos turi didesnį daiktą (0 = jokių)
+    smallItems: 0.2,     // kokia dalis tarpų tarp nuotraukų turi smulkų daiktą
+    pins: 0.28,          // kokia dalis nuotraukų „prisegta“ (antspaudu, vinute, akmenėliu, raktu)
+    minZoom: 0.5,
+    maxZoom: 2,
+    inertia: 0.42,       // kiek laiko (s) stalas slysta po brūkštelėjimo
   },
-  paper: {
-    enabled: true,       // nuotrauka uždėta ant balto lapo
-    margin: 0.035,       // kiek lapas kyšo už nuotraukos (trumpesnės kraštinės dalis)
-    color: '#fbfaf7',    // lapo spalva
+  print: {
+    margin: 0.03,        // šviesus popieriaus kraštas (nuotraukos pločio dalis)
+    tint: 0.32,          // senėjimo atspalvio stiprumas (0–1)
   },
-  motion: {
-    inertia: 0.42,       // inercijos trukmė sekundėmis – kuo daugiau, tuo „sunkesnė“ spiralė
-    wheelStep: 100,      // kiek ratuko pikselių atitinka vieną nuotrauką
-    dragStep: 0.2,       // tempimo jautrumas (ekrano dalis vienai nuotraukai)
-    flick: 8,            // daugiausia nuotraukų, kiek spiralė prasisuka pati po stipraus tempimo pele
-    trackpad: 0.5,       // touchpad jautrumas (1 = kaip pelės ratuko, mažiau – ramiau)
-    touchStep: 0.62,     // braukimo pirštu jautrumas: ekrano dalis vienai nuotraukai (daugiau – ramiau)
-    touchSlop: 14,       // kiek pikselių pirštas turi pajudėti, kad tai būtų laikoma braukimu, o ne prisilietimu
-    touchInertia: 0.13,  // inercija po braukimo pirštu, sekundėmis
-    touchFlick: 1,       // daugiausia nuotraukų, kiek prasisuka pati po brūkštelėjimo pirštu
-    touchFlickSpeed: 2.2,// nuo kokio greičio (nuotraukų per sekundę) brūkštelėjimas perverčia į kitą nuotrauką
-    touchTapSize: 44,    // pirštu paspaudus prisisuka tik iki tokio dydžio (px) ar didesnių nuotraukų
+  light: {
+    flicker: 0.035,      // žvakių mirgėjimo stiprumas (0 = nemirga)
+    dust: 22,            // dulkių dalelių skaičius (0 = be dulkių)
+    vignette: 0.8,       // ekrano kraštų patamsėjimas
+  },
+  intro: {
+    duration: 2.6,       // įžangos trukmė sekundėmis
   },
 };

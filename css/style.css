@@ -1,319 +1,190 @@
-/* ───────── Šriftai ───────── */
-@font-face {
-  font-family: "Megrim";
-  src: url("../fonts/megrim-latin-400-normal.woff2") format("woff2");
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Megrim";
-  src: url("../fonts/megrim-latin-ext-400-normal.woff2") format("woff2");
-  font-display: swap;
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: "Fraunces";
-  src: url("../fonts/fraunces-latin-wonk-italic.woff2") format("woff2");
-  font-style: italic;
-  font-weight: 100 900;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Fraunces";
-  src: url("../fonts/fraunces-latin-ext-wonk-italic.woff2") format("woff2");
-  font-style: italic;
-  font-weight: 100 900;
-  font-display: swap;
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
+/* ───────── Šriftai (SIL Open Font License) ───────── */
+@font-face { font-family: "UnifrakturMaguntia"; src: url("../fonts/unifrakturmaguntia-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "EB Garamond"; src: url("../fonts/eb-garamond-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "EB Garamond"; src: url("../fonts/eb-garamond-latin-ext-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "EB Garamond"; src: url("../fonts/eb-garamond-latin-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "EB Garamond"; src: url("../fonts/eb-garamond-latin-ext-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "EB Garamond"; src: url("../fonts/eb-garamond-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-display: swap; }
 
 :root {
-  --bg: #050506;
-  --ink: #ece8df;
-  --display: "Megrim", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-  --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
-  --ease: cubic-bezier(0.23, 1, 0.32, 1);          /* stiprus ease-out */
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --pad: clamp(16px, 2.6vw, 34px);
+  --table: #2b1d14;
+  --parchment: #e8d8b0;
+  --ink: #2a1a10;
+  --wax: #7a1515;
+  --gold: #b08d3c;
+  --candle: #f3b562;
+  --gothic: "UnifrakturMaguntia", "Old English Text MT", serif;
+  --serif: "EB Garamond", "Cormorant Garamond", Georgia, serif;
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --pad: clamp(12px, 2.2vw, 28px);
+  /* plunksnos pavidalo žymeklis */
+  --quill: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M2 30 L5 25 C 11 16 18 8 30 2 C 27 10 20 18 8 26 Z' fill='%23efe6d2' stroke='%232a1a10' stroke-width='1.2'/%3E%3Cpath d='M2 30 L16 15' stroke='%232a1a10' stroke-width='1'/%3E%3C/svg%3E") 2 30;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-
 html, body {
-  height: 100%;
-  margin: 0;
-  overflow: hidden;              /* puslapis niekada neslenka – valdoma tik spiralė */
-  overscroll-behavior: none;
-  background: var(--bg);
-  color: var(--ink);
-  -webkit-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: transparent;
+  height: 100%; margin: 0; overflow: hidden; overscroll-behavior: none;
+  background: #000; color: var(--parchment);
+  -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent;
 }
 body {
-  position: fixed;
-  inset: 0;
-  font-family: var(--display);
+  position: fixed; inset: 0; font-family: var(--serif);
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
 }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
-/* ───────── Scena ───────── */
-.stage {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background: var(--bg);
-}
+/* ───────── Stalas ───────── */
+.stage { position: absolute; inset: 0; background: var(--table); overflow: hidden; }
+.table { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; cursor: var(--quill), grab; }
+.table.is-over { cursor: var(--quill), pointer; }
+.table.is-dragging { cursor: grabbing; }
+.light { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.light--glow { mix-blend-mode: screen; }
 
-/* ───────── Fonas: centrinės nuotraukos spalvos ───────── */
-.ambient {
-  position: absolute;
-  left: -6%; top: -6%;
-  width: 112%; height: 112%;
-  display: block;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 1.8s ease-out;
-}
-.is-ready .ambient { opacity: 1; }
-.veil {                              /* pakraščiai tamsėja iki juodos, kad nuotraukos šviestų */
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.14) 50%, rgba(0, 0, 0, 0.52) 84%, rgba(0, 0, 0, 0.78) 100%);
-}
-
-.spiral {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  touch-action: none;
-  cursor: grab;
-  outline: none;
-}
-.spiral.is-dragging { cursor: grabbing; }
-.spiral.is-over { cursor: pointer; }
-.spiral:focus-visible { box-shadow: inset 0 0 0 1px rgba(236, 232, 223, 0.28); }
-
-.brand, .counter, .hint { position: absolute; margin: 0; pointer-events: none; font-weight: 400; }
-.place { font-weight: 400; }
-
+/* ───────── Pavadinimas ant pergamento kaspino ───────── */
 .brand {
+  position: absolute; z-index: 5;
   top: calc(var(--pad) + env(safe-area-inset-top));
-  left: calc(var(--pad) + env(safe-area-inset-left));
-  font-size: clamp(21px, 2.3vw, 34px);
-  letter-spacing: 0.16em;
-  line-height: 1;
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 1.4s ease 0.5s, transform 1.4s var(--ease) 0.5s;
-  text-shadow: 0 0 6px #000, 0 0 18px rgba(0, 0, 0, 0.9), 0 0 34px rgba(0, 0, 0, 0.8);
-  max-width: calc(100% - 2 * var(--pad) - 96px);
-  text-wrap: balance;
-}
-.counter {
-  top: calc(var(--pad) + env(safe-area-inset-top) + 0.35em);
-  right: calc(var(--pad) + env(safe-area-inset-right));
-  font-size: clamp(13px, 1.1vw, 16px);
-  letter-spacing: 0.22em;
-  opacity: 0;
-  transition: opacity 1.4s ease 0.9s;
-  font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 6px #000, 0 0 16px rgba(0, 0, 0, 0.9);
-}
-.hint {
-  left: 0;
-  right: 0;
-  bottom: calc(var(--pad) + env(safe-area-inset-bottom));
-  text-align: center;
-  font-size: clamp(12px, 1.05vw, 15px);
-  letter-spacing: 0.34em;
-  text-indent: 0.34em;
-  opacity: 0;
-  transition: opacity 1.2s ease;
-  text-shadow: 0 0 6px #000, 0 0 14px #000, 0 0 28px #000, 0 0 44px #000;
-}
-.place {
-  position: absolute; left: 0; right: 0; top: 0;
-  margin: 0;
-  display: flex; align-items: center; justify-content: center; gap: 0.55em;
-  padding: 0 var(--pad);
+  left: 50%; translate: -50% 0;
+  display: flex; align-items: center;
+  padding: 0.5em 2.6em 0.62em 2.4em;
   pointer-events: none;
-  font-size: clamp(12.5px, 1.05vw, 15px);
-  letter-spacing: 0.24em;
-  line-height: 1.3;
-  text-align: center;
-  text-shadow: 0 0 6px #000, 0 0 14px #000, 0 0 26px #000;
-  opacity: 0;
-  transition: opacity 0.14s ease-out;
+  font-size: clamp(22px, 3.1vw, 40px);
+  transform-origin: 50% 50%;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.55));
+  will-change: transform;
 }
-.place svg { flex: none; width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1; stroke-linejoin: round; filter: drop-shadow(0 0 4px #000); }
-.place.is-shown { opacity: 0.86; transition: opacity 0.26s ease-out; }
-.place:empty, .place.is-empty { display: none; }
+.brand__ribbon { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+.brand__title {
+  position: relative; margin: 0;
+  font-family: var(--gothic); font-weight: 400; font-size: 1em; line-height: 1;
+  color: var(--ink); letter-spacing: 0.01em; white-space: nowrap;
+  display: flex; align-items: baseline;
+}
+.brand__initial {                    /* iliuminuota inicialė */
+  display: inline-grid; place-items: center;
+  width: 1.32em; height: 1.32em; margin-right: 0.06em; align-self: center;
+  font-size: 1.05em; line-height: 1;
+  color: var(--wax);
+  -webkit-text-stroke: 0.035em var(--gold);
+  background:
+    radial-gradient(circle at 12% 14%, var(--gold) 0 0.05em, transparent 0.06em),
+    radial-gradient(circle at 88% 14%, var(--gold) 0 0.05em, transparent 0.06em),
+    radial-gradient(circle at 12% 86%, var(--gold) 0 0.05em, transparent 0.06em),
+    radial-gradient(circle at 88% 86%, var(--gold) 0 0.05em, transparent 0.06em),
+    linear-gradient(#f3e6c4, #dcc690);
+  border: 0.05em solid var(--gold);
+  box-shadow: inset 0 0 0 0.07em #f3e6c4, inset 0 0 0 0.1em rgba(122, 21, 21, 0.55);
+  padding-bottom: 0.1em;
+}
+.brand__seal { position: absolute; right: -0.55em; top: 50%; width: 1.9em; height: 1.9em; translate: 0 -46%; rotate: 12deg; filter: drop-shadow(1px 3px 3px rgba(0,0,0,0.5)); }
+.brand__seal-text { font-family: var(--serif); font-weight: 600; font-size: 19px; fill: #e07a6c; }
+.brand__quill { position: absolute; top: 50%; left: 0; width: 1.6em; height: 1.6em; opacity: 0; pointer-events: none; }
 
-.still {
-  position: absolute;
-  right: calc(var(--pad) - 12px + env(safe-area-inset-right));
-  bottom: calc(var(--pad) - 14px + env(safe-area-inset-bottom));
-  width: 44px; height: 44px;
-  display: grid; place-items: center;
-  padding: 0; border: 0; border-radius: 50%;
-  background: transparent; color: var(--ink);
-  opacity: 0;
-  cursor: pointer;
-  transition: opacity 0.3s ease, transform 0.16s ease-out, background-color 0.2s ease;
+/* ───────── Valdikliai – žalvariniai ženklai ───────── */
+.token {
+  position: absolute; z-index: 5;
+  bottom: calc(var(--pad) + env(safe-area-inset-bottom));
+  width: 52px; height: 52px; padding: 0; border: 0; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  background: radial-gradient(circle at 35% 30%, #f0d58e, var(--gold) 45%, #4a3510 100%);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), inset 0 0 0 3px rgba(60, 40, 10, 0.55), inset 0 0 0 5px rgba(255, 230, 160, 0.35);
+  opacity: 0; transition: opacity 0.6s ease, transform 0.16s ease-out, filter 0.2s ease;
 }
-.still svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 5px #000); }
-.still__play { display: none; }
-.still[aria-pressed="true"] .still__play { display: block; }
-.still[aria-pressed="true"] .still__pause { display: none; }
-.is-ready .still { opacity: 0.4; }
-.still:active { transform: scale(0.97); }
-.still:focus-visible { outline: 1px solid rgba(236, 232, 223, 0.6); outline-offset: -4px; opacity: 1; }
-@media (hover: hover) and (pointer: fine) {
-  .is-ready .still:hover { opacity: 1; background: rgba(236, 232, 223, 0.08); }
+.is-ready .token { opacity: 0.92; }
+.token:active { transform: scale(0.95); }
+.token:focus-visible { outline: 2px solid var(--candle); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) { .token:hover { filter: brightness(1.12); } }
+.token svg { width: 30px; height: 30px; }
+.token--compass { right: calc(var(--pad) + env(safe-area-inset-right)); }
+.token--bell { left: calc(var(--pad) + env(safe-area-inset-left)); }
+.token .ring { fill: rgba(240, 225, 190, 0.55); stroke: #3a2a10; stroke-width: 1.2; }
+.token .needle { fill: #2a1a10; }
+.token .north { fill: var(--wax); }
+.token .cross { fill: #5a4320; opacity: 0.8; }
+.token .bell { fill: none; stroke: #2a1a10; stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+.token .mute { stroke: var(--wax); stroke-width: 2.6; stroke-linecap: round; }
+.token[aria-pressed="true"] .mute { display: none; }
+
+/* ───────── Įžanga ───────── */
+.intro {
+  position: fixed; inset: 0; z-index: 4; pointer-events: none;
+  --r: 0vmax;
+  background: radial-gradient(circle at 50% 50%, transparent var(--r), rgba(0, 0, 0, 0.985) calc(var(--r) + 22vmax));
+  transition: opacity 0.7s ease;
+}
+.intro.is-gone { opacity: 0; }
+.intro[hidden] { display: none; }
+.intro__flame {
+  position: absolute; left: 50%; top: 66%; width: 46px; height: 70px; opacity: 0;
+  border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+  background: radial-gradient(ellipse at 50% 72%, #fffbe8 0%, #ffd77a 28%, #f3a24a 55%, rgba(240, 110, 40, 0) 72%);
+  box-shadow: 0 0 60px 30px rgba(243, 181, 98, 0.35);
+  filter: blur(0.5px);
 }
 
-.is-ready .brand { opacity: 0.88; transform: none; }
-.is-ready .counter { opacity: 0.6; }
-.is-ready .hint { opacity: 0.6; transition-delay: 1.9s; animation: hint-breathe 4.5s ease-in-out 3.2s infinite; }
-.is-ready .hint.is-gone { opacity: 0; animation: none; transition: opacity 0.9s ease; }
-@keyframes hint-breathe { 50% { opacity: 0.32; } }
-
-.sr-only {
-  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
-  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
-}
-.noscript, .message {
-  position: absolute; inset: 0; display: grid; place-items: center; margin: 0; padding: 24px;
-  text-align: center; letter-spacing: 0.12em; font-size: 16px; opacity: 0.7;
-}
-
-/* ───────── Peržiūra per visą ekraną ───────── */
+/* ───────── Peržiūra ───────── */
 .viewer { position: fixed; inset: 0; z-index: 10; outline: none; }
 .viewer[hidden] { display: none; }
-.viewer__backdrop {
-  position: absolute; inset: 0;
-  background: rgba(4, 4, 5, 0.86);   /* spiralė lieka matoma kaip patamsėjęs fonas */
-  opacity: 0;
-  transition: opacity 0.32s ease-out;
-}
+.viewer__backdrop { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 45%, rgba(10, 6, 3, 0.62), rgba(3, 2, 1, 0.9)); opacity: 0; transition: opacity 0.36s ease-out; }
 .viewer.is-open .viewer__backdrop { opacity: 1; }
 .viewer__stage { position: absolute; inset: 0; overflow: hidden; touch-action: none; }
 .viewer__img {
-  position: absolute;
-  display: block;
-  border-radius: 6px;
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
-  transform-origin: 50% 50%;
-  will-change: transform, opacity;
-  -webkit-user-drag: none;
-  box-sizing: border-box;
-  background: #fbfaf7;           /* baltas lapas po nuotrauka */
+  position: absolute; transform-origin: 50% 50%; will-change: transform, opacity;
+  filter: drop-shadow(4px 14px 18px rgba(0, 0, 0, 0.6));
 }
-.viewer__pic { display: block; width: 100%; height: 100%; border-radius: 2px; -webkit-user-drag: none; background: #14141b; }
+.viewer__sheet {
+  position: relative; width: 100%; height: 100%;
+  background: radial-gradient(ellipse at 45% 40%, #efe3c3 0%, #e3d1a6 70%, #c9b07a 100%);
+}
+.viewer__sheet::after {               /* pakraščiai patamsėję nuo laiko */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, rgba(90, 55, 20, 0) 55%, rgba(90, 55, 20, 0.32) 100%);
+}
+.viewer__pic { display: block; width: 100%; height: 100%; -webkit-user-drag: none; filter: sepia(0.2) saturate(0.92) contrast(0.97); background: #d9c79d; }
 
 .viewer__btn {
-  position: absolute;
-  width: 48px; height: 48px;
-  display: grid; place-items: center;
-  padding: 0; border: 0; border-radius: 50%;
-  background: transparent;
-  color: var(--ink);
-  opacity: 0;
-  cursor: pointer;
-  transition: opacity 0.25s ease, transform 0.16s ease-out, background-color 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
+  position: absolute; padding: 0; border: 0; background: transparent; cursor: pointer;
+  opacity: 0; transition: opacity 0.25s ease, transform 0.16s ease-out, filter 0.2s ease;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.6));
 }
-.viewer__btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round; }
-.viewer.is-open .viewer__btn { opacity: 0.6; transition-delay: 0.15s, 0s, 0s; }
-.viewer__btn:active { transform: scale(0.97); }
-.viewer__btn:focus-visible { outline: 1px solid rgba(236, 232, 223, 0.6); outline-offset: 2px; opacity: 1; }
-@media (hover: hover) and (pointer: fine) {
-  .viewer.is-open .viewer__btn:hover { opacity: 1; background: rgba(236, 232, 223, 0.07); transition-delay: 0s; }
-}
-.viewer__close { top: calc(10px + env(safe-area-inset-top)); right: calc(10px + env(safe-area-inset-right)); }
-.viewer__nav { top: 50%; margin-top: -24px; }
+.viewer.is-open .viewer__btn { opacity: 0.92; transition-delay: 0.15s, 0s, 0s; }
+.viewer__btn:active { transform: scale(0.95); }
+.viewer__btn:focus-visible { outline: 2px solid var(--candle); outline-offset: 2px; opacity: 1; }
+@media (hover: hover) and (pointer: fine) { .viewer.is-open .viewer__btn:hover { filter: drop-shadow(0 3px 5px rgba(0,0,0,0.6)) brightness(1.15); transition-delay: 0s; } }
+.viewer__close { top: calc(12px + env(safe-area-inset-top)); right: calc(12px + env(safe-area-inset-right)); width: 54px; height: 54px; }
+.viewer__close svg { width: 100%; height: 100%; }
+.viewer__nav { top: 50%; width: 64px; height: 40px; margin-top: -20px; }
+.viewer__nav svg { width: 100%; height: 100%; fill: var(--gold); stroke: #4a3510; stroke-width: 1; }
 .viewer__nav--prev { left: calc(8px + env(safe-area-inset-left)); }
 .viewer__nav--next { right: calc(8px + env(safe-area-inset-right)); }
 
-.viewer__caption {
-  position: absolute; left: 0; right: 0;
-  bottom: calc(18px + env(safe-area-inset-bottom));
-  padding: 0 24px;
-  text-align: center;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.2s ease-out, transform 0.28s var(--ease);
+.viewer__caption {                    /* pergamento skiautė */
+  position: absolute; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom));
+  translate: -50% 0; max-width: min(88vw, 560px);
+  padding: 0.7em 1.6em 0.8em; text-align: center; color: var(--ink);
+  background: linear-gradient(#efe1bb, #dcc690);
+  clip-path: polygon(1% 8%, 6% 0, 18% 5%, 33% 1%, 52% 6%, 70% 0, 86% 5%, 99% 2%, 100% 40%, 98% 92%, 84% 100%, 64% 95%, 45% 100%, 27% 94%, 10% 100%, 0 90%, 2% 50%);
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+  pointer-events: none; opacity: 0; transition: opacity 0.2s ease-out;
 }
 .viewer__caption[hidden] { display: none; }
-.viewer.is-open .viewer__caption.is-shown { opacity: 1; transform: none; transition-delay: 0.1s; }
-.viewer__title {
-  margin: 0;
-  font-family: var(--serif);
-  font-style: italic;
-  font-weight: 250;
-  font-variation-settings: "WONK" 1;
-  font-size: clamp(21px, 2.1vw, 30px);
-  line-height: 1.15;
-  letter-spacing: 0.005em;
-  text-wrap: balance;
-}
-.viewer__meta {
-  margin: 7px 0 0;
-  font-size: clamp(12px, 1vw, 14px);
-  letter-spacing: 0.26em;
-  text-indent: 0.26em;
-  opacity: 0.62;
-}
-.viewer__desc {
-  margin: 8px auto 0;
-  max-width: 46ch;
-  font-family: var(--serif);
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(14px, 1.1vw, 16px);
-  line-height: 1.4;
-  opacity: 0.74;
-  text-wrap: balance;
-}
-.viewer__title:empty, .viewer__meta:empty, .viewer__desc:empty { display: none; }
-.viewer__title:empty + .viewer__meta { margin-top: 0; }
+.viewer.is-open .viewer__caption.is-shown { opacity: 1; transition-delay: 0.12s; }
+.viewer__title { margin: 0; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: clamp(19px, 1.9vw, 26px); line-height: 1.15; }
+.viewer__meta { margin: 0.25em 0 0; font-family: var(--serif); font-size: clamp(13px, 1.1vw, 15px); letter-spacing: 0.12em; font-variant: small-caps; opacity: 0.8; }
+.viewer__title:empty, .viewer__meta:empty { display: none; }
 .viewer.is-dragging .viewer__btn, .viewer.is-dragging .viewer__caption { opacity: 0 !important; transition-duration: 0.15s; transition-delay: 0s; }
 
-@media (max-width: 480px) {
-  .brand { font-size: 17px; letter-spacing: 0.12em; line-height: 1.25; }
-  .counter { font-size: 12px; letter-spacing: 0.16em; top: calc(var(--pad) + env(safe-area-inset-top) + 0.2em); }
-  .hint { font-size: 11.5px; letter-spacing: 0.26em; text-indent: 0.26em; }
-}
-
 @media (max-width: 640px) {
-  .viewer__nav { top: auto; bottom: calc(8px + env(safe-area-inset-bottom)); margin-top: 0; }
-  .viewer__caption { padding: 0 60px; bottom: calc(14px + env(safe-area-inset-bottom)); }
+  .viewer__nav { top: auto; bottom: calc(10px + env(safe-area-inset-bottom)); margin-top: 0; width: 52px; }
+  .viewer__caption { bottom: calc(60px + env(safe-area-inset-bottom)); }
+  .token { width: 46px; height: 46px; }
 }
 
-/* ───────── Derinimo skydelis (?derinti) ───────── */
-.tune {
-  position: fixed; z-index: 30; top: 64px; right: 12px; width: 268px; max-height: calc(100% - 80px); overflow: auto;
-  padding: 12px 14px 14px; border-radius: 10px;
-  background: rgba(14, 14, 20, 0.9); border: 1px solid rgba(236, 232, 223, 0.12);
-  font: 12px/1.3 system-ui, sans-serif; color: #d9d6cf; user-select: none;
-}
-.tune h2 { margin: 0 0 8px; font: 400 15px/1 var(--display); letter-spacing: 0.18em; }
-.tune label { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; margin-top: 8px; }
-.tune input[type="range"] { grid-column: 1 / -1; width: 100%; accent-color: #cfc8b8; }
-.tune output { font-variant-numeric: tabular-nums; opacity: 0.7; }
-.tune button { margin-top: 12px; width: 100%; padding: 8px; border-radius: 6px; border: 1px solid rgba(236, 232, 223, 0.25); background: transparent; color: inherit; cursor: pointer; }
+.noscript, .message { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; padding: 24px; text-align: center; font-size: 18px; color: var(--parchment); }
 
 @media (prefers-reduced-motion: reduce) {
-  .brand, .counter, .hint, .ambient, .viewer__backdrop, .viewer__btn, .viewer__caption { transition-duration: 0.2s !important; transition-delay: 0s !important; }
-  .is-ready .hint { animation: none; }
-  .still { display: none; }
+  .token, .viewer__backdrop, .viewer__btn, .viewer__caption, .intro { transition-duration: 0.15s !important; transition-delay: 0s !important; }
 }
+.is-loading .brand, .is-loading .token { opacity: 0; }
