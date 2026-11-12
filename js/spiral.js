@@ -1,5 +1,6 @@
 import { CONFIG } from './config.js';
 import { extractPalette } from './ambient.js';
+import { meanderPath, frameBand } from './frame.js';
 
 const DEG = Math.PI / 180;
 const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
@@ -628,6 +629,15 @@ export class Spiral {
       if (d.blur > 0.03 && item.soft) {
         ctx.globalAlpha = alpha * fade * d.blur;
         ctx.drawImage(item.soft, -w / 2, -h / 2, w, h);
+      }
+      const fr = CONFIG.frame;
+      if (fr.enabled && Math.min(w, h) >= fr.minSize) {   // baltas meandro rėmelis
+        const k = clamp((Math.min(w, h) - fr.minSize) / 40);
+        ctx.globalAlpha = alpha * fade * fr.opacity * k;
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = Math.max(0.6, frameBand(w, h) * fr.line);
+        ctx.lineJoin = 'miter';
+        ctx.stroke(new Path2D(meanderPath(w, h)));
       }
     }
     ctx.restore();

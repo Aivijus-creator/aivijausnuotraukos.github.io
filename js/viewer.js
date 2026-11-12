@@ -1,3 +1,6 @@
+import { CONFIG } from './config.js';
+import { meanderPath, frameBand } from './frame.js';
+
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const mod = (n, m) => ((n % m) + m) % m;
 const EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';       // stiprus ease-out
@@ -66,23 +69,38 @@ export class Viewer {
   }
 
   makeImg(item, box) {
+    const el = document.createElement('div');      // nuotrauka + rėmelis juda kartu
+    el.className = 'viewer__img';
     const img = document.createElement('img');
-    img.className = 'viewer__img';
+    img.className = 'viewer__pic';
     img.alt = item.alt;
     img.draggable = false;
     img.decoding = 'async';
-    this.place(img, box);
+    el.append(img);
+    el.pic = img;
+    if (CONFIG.frame.enabled) {
+      el.frame = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      el.frame.setAttribute('class', 'viewer__frame');
+      el.frame.setAttribute('aria-hidden', 'true');
+      el.append(el.frame);
+    }
+    this.place(el, box);
     img.src = this.spiral.bestSrc(item.index);
     const full = new Image();                        // pilna kokybė kraunama tik čia
     full.decoding = 'async';
     full.src = item.urls.lg;
     const swap = () => { if (img.isConnected && full.naturalWidth) img.src = full.src; };
     full.onload = () => (full.decode ? full.decode().then(swap, swap) : swap());
-    return img;
+    return el;
   }
 
-  place(img, box) {
-    Object.assign(img.style, { left: `${box.cx - box.w / 2}px`, top: `${box.cy - box.h / 2}px`, width: `${box.w}px`, height: `${box.h}px` });
+  place(el, box) {
+    Object.assign(el.style, { left: `${box.cx - box.w / 2}px`, top: `${box.cy - box.h / 2}px`, width: `${box.w}px`, height: `${box.h}px` });
+    if (el.frame) {
+      const { w, h } = box, fr = CONFIG.frame;
+      el.frame.setAttribute('viewBox', `${-w / 2} ${-h / 2} ${w} ${h}`);
+      el.frame.innerHTML = `<path d="${meanderPath(w, h)}" fill="none" stroke="#fff" stroke-opacity="${fr.opacity}" stroke-width="${Math.max(0.6, frameBand(w, h) * fr.line)}" stroke-linejoin="miter"/>`;
+    }
   }
 
   open(index) {
@@ -120,7 +138,7 @@ export class Viewer {
       this.root.focus({ preventScroll: true });
       setTimeout(() => { this.busy = false; }, this.reduced ? 200 : 300);
     };
-    if (img.decode) img.decode().then(start, start); else start();
+    if (img.pic.decode) img.pic.decode().then(start, start); else start();
   }
 
   close() {
@@ -224,7 +242,7 @@ export class Viewer {
     try { this.stage.setPointerCapture(e.pointerId); } catch {}
     this.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (this.pointers.size === 1) {
-      this.g = { mode: null, x0: e.clientX, y0: e.clientY, zx: this.z.x, zy: this.z.y, onImg: e.target === this.img, lx: e.clientX, ly: e.clientY, lt: performance.now(), vx: 0, vy: 0, dx: 0, dy: 0 };
+      this.g = { mode: null, x0: e.clientX, y0: e.clientY, zx: this.z.x, zy: this.z.y, onImg: !!this.img && this.img.contains(e.target), lx: e.clientX, ly: e.clientY, lt: performance.now(), vx: 0, vy: 0, dx: 0, dy: 0 };
     } else if (this.pointers.size === 2) {
       const [a, b] = [...this.pointers.values()];
       this.g = { mode: 'pinch', d0: Math.hypot(a.x - b.x, a.y - b.y) || 1, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2, s0: this.z.s, x0z: this.z.x, y0z: this.z.y };
