@@ -10,7 +10,7 @@ Svetainė visiškai statinė – be serverio ir duomenų bazės.
 1. Įmesk originalus (JPG, PNG, WebP) į aplanką **`photos/`**. Failų pavadinimuose geriau nenaudoti tarpų.
 2. Paleisk **`npm run photos`**. Komanda:
    - kiekvienai nuotraukai sukuria tris sumažintas WebP versijas aplanke `optimized/`
-     (mažą spiralei, vidutinę centrui, didelę peržiūrai per visą ekraną);
+     (mažą stalui, vidutinę priartinus, didelę peržiūrai);
    - naujus failus pati įrašo į **`photos.json`** sąrašo galą.
 3. Atsidaryk `photos.json` ir kiekvienai nuotraukai įrašyk **vietą** (`location`); jei nori – ir pavadinimą,
    metus, sukeisk eilės tvarką. Jei vieta neįrašyta, `npm run photos` apie tai perspėja.
